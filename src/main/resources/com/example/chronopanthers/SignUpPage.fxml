@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="635.0" prefWidth="581.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.SignUpPageController">
+   <children>
+      <Label layoutX="129.0" layoutY="189.0" text="Username" />
+      <Label layoutX="130.0" layoutY="221.0" text="Password" />
+      <PasswordField fx:id="txtPassword" layoutX="203.0" layoutY="217.0" promptText="Password" />
+      <TextField fx:id="txtUsername" layoutX="203.0" layoutY="185.0" promptText="Username" />
+      <Button fx:id="signUpButton" layoutX="203.0" layoutY="254.0" mnemonicParsing="false" onAction="#signUp" text="Sign Up" />
+      <Label fx:id="isConnected" layoutX="218.0" layoutY="93.0" prefHeight="17.0" prefWidth="126.0" text="Boom" />
+   </children>
+</AnchorPane>

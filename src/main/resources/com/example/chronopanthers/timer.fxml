@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="701.0" prefWidth="587.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Controller">
+   <children>
+      <VBox fx:id="timeBox" layoutX="109.0" layoutY="81.0" prefHeight="224.0" prefWidth="393.0">
+         <children>
+            <AnchorPane prefHeight="220.0" prefWidth="393.0">
+               <children>
+                  <Circle fx:id="backgroundCircle" fill="#1f93ff" layoutX="197.0" layoutY="110.0" radius="104.0" stroke="#e5e7eb" strokeType="INSIDE" strokeWidth="15.0" />
+                  <Circle fx:id="progressRing" fill="#1f93ff" layoutX="197.0" layoutY="110.0" radius="104.0" stroke="#3b82f6" strokeType="INSIDE" strokeWidth="15.0" />
+                  <VBox layoutX="164.0" layoutY="90.0" prefHeight="39.0" prefWidth="66.0">
+                     <children>
+                        <Label fx:id="timerDisplay" alignment="CENTER" prefHeight="23.0" prefWidth="84.0" text="25:00">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="timerState" alignment="CENTER" prefHeight="17.0" prefWidth="197.0" text="Work Time" />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <Label fx:id="title" alignment="CENTER" layoutY="30.0" prefHeight="17.0" prefWidth="587.0" text="ChronoPanthers Pomodoro" textAlignment="CENTER">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="subtitle" alignment="CENTER" layoutX="-1.0" layoutY="65.0" prefHeight="17.0" prefWidth="587.0" text="Flow with time, achieve with focus" />
+      <VBox fx:id="settings" alignment="CENTER" layoutX="105.0" layoutY="373.0" prefHeight="149.0" prefWidth="401.0" spacing="5.0">
+         <children>
+            <Label fx:id="changeSettings" alignment="CENTER" prefHeight="17.0" prefWidth="403.0" text="Work Time" />
+            <Spinner fx:id="workDurationInput" editable="true" prefHeight="26.0" prefWidth="334.0" />
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="409.0" text="Rest Time" />
+            <Spinner fx:id="breakDurationInput" editable="true" prefHeight="26.0" prefWidth="334.0" />
+            <Button fx:id="applySettingsButton" alignment="CENTER" mnemonicParsing="false" onAction="#applySettings" prefHeight="26.0" prefWidth="319.0" text="Apply Setttings" />
+         </children>
+      </VBox>
+      <VBox fx:id="stats" layoutX="123.0" layoutY="534.0" prefHeight="137.0" prefWidth="364.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="365.0" text="Statistics">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font></Label>
+            <HBox prefHeight="120.0" prefWidth="229.0">
+               <children>
+                  <VBox fx:id="workSessions" alignment="CENTER" prefHeight="56.0" prefWidth="229.0">
+                     <children>
+                        <Label text="Work Sessions" />
+                        <Label fx:id="workSessionsDisplay" text="0" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="breakSessions" alignment="CENTER" prefHeight="56.0" prefWidth="229.0">
+                     <children>
+                        <Label prefWidth="81.0" text="BreakSessions" />
+                        <Label fx:id="breakSessionsDisplay" text="0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox fx:id="controls" alignment="CENTER" layoutX="166.0" layoutY="311.0" prefHeight="56.0" prefWidth="280.0" spacing="25.0">
+         <children>
+            <Button fx:id="playButton" mnemonicParsing="false" onAction="#play" prefHeight="26.0" prefWidth="33.0" styleClass="controls" text="▶" />
+            <Button fx:id="pauseButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#pause" styleClass="controls" text="❚❚" />
+            <Button fx:id="resetButton" alignment="CENTER" mnemonicParsing="false" onAction="#reset" styleClass="controls" text="↻" />
+         </children>
+      </HBox>
+      <MenuBar layoutY="1.0" prefHeight="28.0" prefWidth="587.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Log Out" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>
