@@ -12,7 +12,8 @@
       <Label layoutX="130.0" layoutY="221.0" text="Password" />
       <PasswordField fx:id="txtPassword" layoutX="203.0" layoutY="217.0" promptText="Password" />
       <TextField fx:id="txtUsername" layoutX="203.0" layoutY="185.0" promptText="Username" />
-      <Button fx:id="signUpButton" layoutX="203.0" layoutY="254.0" mnemonicParsing="false" onAction="#signUp" text="Sign Up" />
+      <Button fx:id="signUpButton" layoutX="203.0" layoutY="254.0" mnemonicParsing="false" onAction="#signUp" prefHeight="26.0" prefWidth="63.0" text="Sign Up" />
       <Label fx:id="isConnected" layoutX="218.0" layoutY="93.0" prefHeight="17.0" prefWidth="126.0" text="Boom" />
+      <Button fx:id="back" layoutX="297.0" layoutY="255.0" mnemonicParsing="false" onAction="#back" prefHeight="26.0" prefWidth="63.0" text="Back" />
    </children>
 </AnchorPane>

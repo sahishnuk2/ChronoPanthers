@@ -66,7 +66,7 @@ public class LoginPageController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("SignUpPage.fxml"));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        //scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/signUpPage.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
