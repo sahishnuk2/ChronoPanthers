@@ -53,13 +53,14 @@ public class SignUpPageController implements Initializable {
                 Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
                 stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
                 scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
                 stage.setTitle("Login Page");
                 stage.setScene(scene);
                 stage.show();
             } else {
                 isConnected.setText("Username already used!");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("You cannot use this username.");
+                alert.setContentText("Username is already used OR empty field");
                 alert.show();
             }
         } catch (Exception e) {

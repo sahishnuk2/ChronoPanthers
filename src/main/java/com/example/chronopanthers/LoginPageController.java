@@ -31,9 +31,9 @@ public class LoginPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (loginModel.isDbConnected()) {
-            isConnected.setText("Connected");
+            isConnected.setText("Connected to DB");
         } else {
-            isConnected.setText("Not Connected");
+            isConnected.setText("Not Connected to DB");
         }
     }
 
@@ -49,7 +49,7 @@ public class LoginPageController implements Initializable {
                 stage.setScene(scene);
                 stage.show();
             } else {
-                isConnected.setText("Not Correct");
+                isConnected.setText("Username or password is incorrect");
             }
         } catch (Exception e) {
             e.printStackTrace();

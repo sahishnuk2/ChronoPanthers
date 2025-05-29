@@ -10,10 +10,10 @@
    <children>
       <Label layoutX="129.0" layoutY="189.0" text="Username" />
       <Label layoutX="130.0" layoutY="221.0" text="Password" />
-      <Button fx:id="login" layoutX="202.0" layoutY="252.0" mnemonicParsing="false" onAction="#login" text="Log In" />
-      <Button fx:id="signup" layoutX="282.0" layoutY="252.0" mnemonicParsing="false" onAction="#signup" prefHeight="26.0" prefWidth="63.0" text="Sign Up" />
+      <Button fx:id="login" layoutX="202.0" layoutY="252.0" mnemonicParsing="false" onAction="#login" prefHeight="26.0" prefWidth="63.0" text="Log In" />
+      <Button fx:id="signup" layoutX="299.0" layoutY="252.0" mnemonicParsing="false" onAction="#signup" prefHeight="26.0" prefWidth="63.0" text="Sign Up" />
       <PasswordField fx:id="txtPassword" layoutX="202.0" layoutY="217.0" promptText="Password" />
       <TextField fx:id="txtUsername" layoutX="202.0" layoutY="185.0" promptText="Username" />
-      <Label fx:id="isConnected" layoutX="219.0" layoutY="88.0" prefHeight="17.0" prefWidth="139.0" text="Isconnected" />
+      <Label fx:id="isConnected" alignment="CENTER" layoutY="118.0" prefHeight="17.0" prefWidth="581.0" text="Isconnected" />
    </children>
 </AnchorPane>

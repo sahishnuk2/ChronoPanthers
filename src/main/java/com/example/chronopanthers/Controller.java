@@ -203,7 +203,7 @@ public class Controller implements Initializable {
             Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
             stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
             scene = new Scene(root);
-            //scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
             stage.setTitle("Login Page");
             stage.setScene(scene);
             stage.show();
