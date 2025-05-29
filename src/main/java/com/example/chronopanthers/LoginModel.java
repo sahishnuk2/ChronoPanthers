@@ -64,7 +64,6 @@ public class LoginModel {
                 if (rowsInserted > 0) {
                     return true;
                 } else {
-                    System.out.println("non username problem");
                     return false;
                 }
             }
