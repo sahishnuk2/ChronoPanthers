@@ -1,5 +1,6 @@
 package com.example.chronopanthers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +28,8 @@ public class SignUpPageController implements Initializable {
     private Label isConnected;
     @FXML
     private TextField txtUsername, txtPassword;
+    @FXML
+    private ImageView imageView;
 
     private Stage stage;
     private Scene scene;
@@ -34,17 +39,34 @@ public class SignUpPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Image myImage = new Image(getClass().getResourceAsStream("Images/Panther.jpeg"));
+        imageView.setImage(myImage);
+
+        Platform.runLater(() -> signUpButton.requestFocus());
+
         if (loginModel.isDbConnected()) {
-            isConnected.setText("Connected");
+            isConnected.setText("");
+            System.out.println("Connected to DB");
         } else {
-            isConnected.setText("Not Connected");
+            isConnected.setText("Not Connected to DB");
         }
     }
 
     public void signUp(ActionEvent event) throws IOException {
         try {
-            if (loginModel.isSignUp(txtUsername.getText(), txtPassword.getText())) {
-                isConnected.setText("Correct");
+            if (txtUsername.getText().isBlank() ) {
+                isConnected.setText("Username Empty!");
+            } else if (txtPassword.getText().isBlank()) {
+                isConnected.setText("Password Empty!");
+            } else if (!loginModel.isSignUp(txtUsername.getText(), txtPassword.getText())) {
+                isConnected.setText("Username already used!");
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setContentText("Username is already used OR empty field");
+//                alert.show();
+
+
+            } else {
+                isConnected.setText("");
                 Alert confirmation = new Alert(Alert.AlertType.INFORMATION);
                 confirmation.setTitle("Sign up successful");
                 confirmation.setContentText("Username and password accepted.\nPlease login to continue.");
@@ -57,11 +79,6 @@ public class SignUpPageController implements Initializable {
                 stage.setTitle("Login Page");
                 stage.setScene(scene);
                 stage.show();
-            } else {
-                isConnected.setText("Username already used!");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Username is already used OR empty field");
-                alert.show();
             }
         } catch (Exception e) {
             e.printStackTrace();

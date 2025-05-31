@@ -21,13 +21,6 @@ public class LoginModel {
     }
 
     public boolean isLogin(String user, String pass) throws SQLException {
-        if (user == null || user.isBlank() || pass == null || pass.isBlank()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Please enter username or password");
-            alert.show();
-            return false;
-        }
-
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String query = "SELECT * FROM loginDetails WHERE username = ? AND password = ?";
@@ -51,13 +44,6 @@ public class LoginModel {
     }
 
     public boolean isSignUp(String user, String pass) throws SQLException {
-        if (user == null || user.isBlank() || pass == null || pass.isBlank()) {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setContentText("Please enter username or password");
-//            alert.show();
-            return false;
-        }
-
         PreparedStatement selectStatement = null;
         ResultSet resultSet = null;
         PreparedStatement insertStatement=  null;

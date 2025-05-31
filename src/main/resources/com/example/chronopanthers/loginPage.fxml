@@ -4,16 +4,20 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="635.0" prefWidth="581.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.LoginPageController">
+<AnchorPane fx:id="page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="303.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.LoginPageController">
    <children>
-      <Label layoutX="129.0" layoutY="189.0" text="Username" />
-      <Label layoutX="130.0" layoutY="221.0" text="Password" />
-      <Button fx:id="login" layoutX="202.0" layoutY="252.0" mnemonicParsing="false" onAction="#login" prefHeight="26.0" prefWidth="63.0" text="Log In" />
-      <Button fx:id="signup" layoutX="299.0" layoutY="252.0" mnemonicParsing="false" onAction="#signup" prefHeight="26.0" prefWidth="63.0" text="Sign Up" />
-      <PasswordField fx:id="txtPassword" layoutX="202.0" layoutY="217.0" promptText="Password" />
-      <TextField fx:id="txtUsername" layoutX="202.0" layoutY="185.0" promptText="Username" />
-      <Label fx:id="isConnected" alignment="CENTER" layoutY="118.0" prefHeight="17.0" prefWidth="581.0" text="Isconnected" />
+      <AnchorPane fx:id="loginFields" layoutX="34.0" layoutY="32.0" prefHeight="278.0" prefWidth="236.0">
+         <children>
+            <TextField fx:id="txtUsername" layoutX="38.0" layoutY="124.0" promptText="Username" />
+            <PasswordField fx:id="txtPassword" layoutX="38.0" layoutY="176.0" promptText="Password" />
+            <Button fx:id="login" layoutX="38.0" layoutY="226.0" mnemonicParsing="false" onAction="#login" prefHeight="26.0" prefWidth="63.0" text="Log In" />
+            <Button fx:id="signup" layoutX="118.0" layoutY="226.0" mnemonicParsing="false" onAction="#signup" prefHeight="26.0" prefWidth="63.0" text="Sign Up" />
+            <Label fx:id="isConnected" layoutX="38.0" layoutY="205.0" prefHeight="17.0" prefWidth="198.0" text="Isconnected" />
+            <ImageView fx:id="imageView" fitHeight="94.0" fitWidth="117.0" layoutX="59.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

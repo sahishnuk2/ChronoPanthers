@@ -1,5 +1,6 @@
 package com.example.chronopanthers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,6 +26,8 @@ public class LoginPageController implements Initializable {
     private Label isConnected;
     @FXML
     private TextField txtUsername, txtPassword;
+    @FXML
+    private ImageView imageView;
 
     private Stage stage;
     private Scene scene;
@@ -28,10 +35,18 @@ public class LoginPageController implements Initializable {
 
     public LoginModel loginModel = new LoginModel();
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Image myImage = new Image(getClass().getResourceAsStream("Images/Panther.jpeg"));
+        imageView.setImage(myImage);
+
+        Platform.runLater(() -> login.requestFocus());
+
+
         if (loginModel.isDbConnected()) {
-            isConnected.setText("Connected to DB");
+            isConnected.setText("");
+            System.out.println("Connected to DB");
         } else {
             isConnected.setText("Not Connected to DB");
         }
@@ -39,8 +54,15 @@ public class LoginPageController implements Initializable {
 
     public void login(ActionEvent event) throws IOException {
         try {
-            if (loginModel.isLogin(txtUsername.getText(), txtPassword.getText())) {
-                isConnected.setText("Correct");
+            if (txtUsername.getText().isBlank()) {
+                isConnected.setText("Username Empty!");
+            } else if (txtPassword.getText().isBlank()) {
+                isConnected.setText("Password Empty!");
+            } else if (!loginModel.isLogin(txtUsername.getText(), txtPassword.getText())) {
+                isConnected.setText("Username or password is incorrect");
+            } else {
+                isConnected.setText("");
+                System.out.println("Login Successful");
 
                 // Use FXMLLoader to get the controller
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
@@ -50,31 +72,24 @@ public class LoginPageController implements Initializable {
                 Controller mainController = loader.getController();
                 mainController.setCurrentUser(txtUsername.getText());
 
-                stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 scene = new Scene(root);
                 scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
                 stage.setTitle("Timer");
                 stage.setScene(scene);
                 stage.show();
-            } else {
-                isConnected.setText("Username or password is incorrect");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-
-
-
-
     }
+
     public void signup(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("SignUpPage.fxml"));
-        stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/signUpPage.css").toExternalForm());
+        stage.setTitle("Sign up page");
         stage.setScene(scene);
         stage.show();
     }
