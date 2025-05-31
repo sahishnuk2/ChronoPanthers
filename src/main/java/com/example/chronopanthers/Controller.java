@@ -231,10 +231,19 @@ public class Controller implements Initializable {
 
 
     public void logout(ActionEvent event) throws IOException {
+//        if (running) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Logout");
+//            alert.setHeaderText("Timer still running");
+//            alert.setContentText("Please pause the timer before logging out");
+//            alert.showAndWait();
+//            return;
+//        }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
-        alert.setContentText("Do you want to save before exiting?: ");
+        alert.setContentText("Are you sure? Do more work! Don't leave me!!!!");
 
         if(alert.showAndWait().get() == ButtonType.OK){
             Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
