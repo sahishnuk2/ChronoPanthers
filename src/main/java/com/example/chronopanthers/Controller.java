@@ -25,6 +25,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import static com.example.chronopanthers.SQliteConnection.*;
 
 public class Controller implements Initializable {
     @FXML
@@ -39,6 +40,10 @@ public class Controller implements Initializable {
     private Circle progressRing;
     @FXML
     private VBox timeBox;
+    @FXML
+    private Label titleLabel;
+
+    private String currentUsername;
 
     private double progress;
     private int workTime = 25 * 60;
@@ -80,6 +85,10 @@ public class Controller implements Initializable {
                     timeLeft = breakTime;
                     workSessions++;
                     workSessionsDisplay.setText(String.valueOf(workSessions));
+                    if (currentUsername != null) {
+                        updateWorkSession(currentUsername);
+                        System.out.println("Work session completed and saved to database");
+                    }
 
                     // Show notification
                     System.out.println("Break time! Time to relax for a few minutes.");
@@ -95,6 +104,10 @@ public class Controller implements Initializable {
                     timeLeft = workTime;
                     breakSessions++;
                     breakSessionsDisplay.setText(String.valueOf(breakSessions));
+                    if (currentUsername != null) {
+                        updateBreakSession(currentUsername);
+                        System.out.println("Break session completed and saved to database");
+                    }
 
                     // Show notification
                     System.out.println("Back to work! Focus on your next task.");
@@ -146,6 +159,30 @@ public class Controller implements Initializable {
         //progressBar.setProgress(0.0);
         timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
         progressRing.setStroke(Color.web("#3b82f6"));
+    }
+
+    public void setCurrentUser(String username) {
+        this.currentUsername = username;
+        System.out.println("Current user set to: " + username);
+
+        // Set personalized title
+        if (titleLabel != null) {
+            titleLabel.setText("Let's Pomodoro, " + username);
+        }
+
+        // Load existing session counts from database
+        loadSessionCounts();
+    }
+
+    private void loadSessionCounts() {
+        if (currentUsername != null) {
+            int[] counts = getSessionCounts(currentUsername);
+            workSessions = counts[0];
+            breakSessions = counts[1];
+            workSessionsDisplay.setText(String.valueOf(workSessions));
+            breakSessionsDisplay.setText(String.valueOf(breakSessions));
+            System.out.println("Loaded session counts from database - Work: " + workSessions + ", Break: " + breakSessions);
+        }
     }
 
     public void updateDisplay() {

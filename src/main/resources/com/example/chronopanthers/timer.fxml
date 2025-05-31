@@ -34,7 +34,7 @@
             </AnchorPane>
          </children>
       </VBox>
-      <Label fx:id="title" alignment="CENTER" layoutY="30.0" prefHeight="17.0" prefWidth="587.0" text="ChronoPanthers Pomodoro" textAlignment="CENTER">
+      <Label fx:id="titleLabel" alignment="CENTER" layoutY="30.0" prefHeight="17.0" prefWidth="587.0" text="ChronoPanthers Pomodoro" textAlignment="CENTER">
          <font>
             <Font size="30.0" />
          </font>

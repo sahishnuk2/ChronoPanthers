@@ -41,7 +41,15 @@ public class LoginPageController implements Initializable {
         try {
             if (loginModel.isLogin(txtUsername.getText(), txtPassword.getText())) {
                 isConnected.setText("Correct");
-                Parent root = FXMLLoader.load(getClass().getResource("timer.fxml"));
+
+                // Use FXMLLoader to get the controller
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
+                Parent root = loader.load();
+
+                // Get the controller and set the current user
+                Controller mainController = loader.getController();
+                mainController.setCurrentUser(txtUsername.getText());
+
                 stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
                 scene = new Scene(root);
                 scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
