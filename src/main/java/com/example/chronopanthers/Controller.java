@@ -220,8 +220,8 @@ public class Controller implements Initializable {
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Warning");
-            alert.setHeaderText("Hi boss, there seems to be small miscommunication"); // Optional: can set a custom header or leave it null
-            alert.setContentText("Pause first");
+            alert.setHeaderText("Settings not updated!");
+            alert.setContentText("Pause first to apply new settings");
             alert.showAndWait();
         }
     }
@@ -243,7 +243,7 @@ public class Controller implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
-        alert.setContentText("Are you sure? Do more work! Don't leave me!!!!");
+        alert.setContentText("Have you completed all your work?");
 
         if(alert.showAndWait().get() == ButtonType.OK){
             Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));

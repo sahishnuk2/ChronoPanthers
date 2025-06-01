@@ -90,6 +90,7 @@ public class SignUpPageController implements Initializable {
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
+        stage.setTitle("Login Page");
         stage.setScene(scene);
         stage.show();
     }
