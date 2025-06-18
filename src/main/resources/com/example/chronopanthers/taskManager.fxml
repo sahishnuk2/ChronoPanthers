@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.TaskManager">
+   <children>
+      <TableView fx:id="taskTable" layoutX="132.0" layoutY="89.0" prefHeight="200.0" prefWidth="376.0">
+        <columns>
+          <TableColumn fx:id="type" prefWidth="75.0" text="Task Type" />
+          <TableColumn fx:id="name" prefWidth="75.0" text="Name" />
+            <TableColumn fx:id="dueDate" prefWidth="75.0" text="Due Date" />
+            <TableColumn fx:id="completed" prefWidth="75.0" text="Completed" />
+            <TableColumn fx:id="overdue" prefWidth="75.0" text="Overdue" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
