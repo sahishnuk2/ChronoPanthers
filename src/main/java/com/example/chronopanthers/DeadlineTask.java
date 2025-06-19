@@ -7,14 +7,14 @@ public class DeadlineTask extends Task{
     private LocalDate deadline;
     private boolean isOverdue = false;
 
-    public DeadlineTask(String taskName, int year, int month, int day) {
+    public DeadlineTask(String taskName, LocalDate deadline) {
         super(taskName);
-        this.deadline = LocalDate.of(year, month, day);
+        this.deadline = deadline;
     }
 
     @Override
-    public boolean isOverdue() {
-        this.isOverdue = LocalDate.now().isAfter(this.deadline) && !this.isCompleted();
+    public boolean getIsOverdue() {
+        this.isOverdue = LocalDate.now().isAfter(this.deadline) && !this.getIsCompleted();
         return this.isOverdue;
     }
 
@@ -31,7 +31,7 @@ public class DeadlineTask extends Task{
     @Override
     public String toString() {
         return String.format("[ %s | %b | %s | %b ]",
-                this.getTaskName(), this.isCompleted(), this.deadline, this.isOverdue());
+                this.getTaskName(), this.getIsCompleted(), this.deadline, this.getIsOverdue());
     }
 
 

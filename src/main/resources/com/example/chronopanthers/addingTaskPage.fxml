@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<DialogPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="221.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.TaskDescription">
+    <header>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="357.0" prefWidth="346.0">
+         <children>
+            <TextField fx:id="taskName" layoutX="170.0" layoutY="49.0" prefHeight="26.0" prefWidth="186.0" />
+            <RadioButton fx:id="normal" layoutX="170.0" layoutY="22.0" mnemonicParsing="false" selected="true" text="Normal">
+               <toggleGroup>
+                  <ToggleGroup fx:id="taskType" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="deadline" layoutX="270.0" layoutY="22.0" mnemonicParsing="false" text="Deadline" toggleGroup="$taskType" />
+            <Label layoutX="76.0" layoutY="22.0" text="Task Type" />
+            <Label layoutX="79.0" layoutY="93.0" text="Due Date" />
+            <Label layoutX="73.0" layoutY="54.0" text="Task Name" />
+            <DatePicker fx:id="dueDate" disable="true" layoutX="170.0" layoutY="88.0" />
+            <Button fx:id="addTaskButton" layoutX="228.0" layoutY="137.0" mnemonicParsing="false" onAction="#addTask" text="Add Task" />
+            <Label fx:id="username" layoutX="171.0" layoutY="75.0" prefHeight="17.0" prefWidth="127.0" />
+         </children></AnchorPane>
+    </header>
+    <expandableContent>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+    </expandableContent>
+</DialogPane>

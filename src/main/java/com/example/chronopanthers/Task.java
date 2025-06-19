@@ -12,7 +12,7 @@ abstract class Task {
         this.isCompleted = false;
     }
 
-    public boolean isCompleted() {
+    public boolean getIsCompleted() {
         return this.isCompleted;
     }
 
@@ -26,7 +26,7 @@ abstract class Task {
 
     public abstract String getTaskType();
     public abstract LocalDate getDeadline();
-    public abstract boolean isOverdue();
+    public abstract boolean getIsOverdue();
 
     @Override
     public abstract String toString();

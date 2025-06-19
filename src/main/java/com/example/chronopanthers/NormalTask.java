@@ -13,7 +13,7 @@ public class NormalTask extends Task {
     }
 
     @Override
-    public boolean isOverdue() {
+    public boolean getIsOverdue() {
         return false;
     }
 
@@ -24,6 +24,6 @@ public class NormalTask extends Task {
 
     @Override
     public String toString() {
-        return String.format("[ %s | %b | NIL | NIL]", this.getTaskName(), this.isCompleted());
+        return String.format("[ %s | %b | NIL | NIL]", this.getTaskName(), this.getIsCompleted());
     }
 }

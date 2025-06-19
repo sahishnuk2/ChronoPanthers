@@ -255,4 +255,21 @@ public class Controller implements Initializable {
             stage.show();
         }
     }
+
+    public void taskManager(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("taskManager.fxml"));
+        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
+        stage.setTitle("Login Page");
+        stage.setScene(scene);
+        stage.show();
+
+//        FXMLLoader fxmlLoader = new FXMLLoader(ChronoPanthers.class.getResource("taskManager.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load());
+//        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
+//        stage.setTitle("Login Page");
+//        stage.setScene(scene);
+//        stage.show();
+    }
 }
