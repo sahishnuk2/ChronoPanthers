@@ -13,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import javax.imageio.IIOException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -33,7 +32,7 @@ public class TaskManager implements Initializable {
     @FXML
     private TableColumn<Task, Boolean> overdue;
 
-    private final ObservableList<Task> tasks = FXCollections.observableArrayList();
+    private static final ObservableList<Task> tasks = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -72,19 +71,11 @@ public class TaskManager implements Initializable {
     private Parent root;
 
     public void timer(ActionEvent event) throws IOException {
-//        Parent root = FXMLLoader.load(getClass().getResource("timer.fxml"));
-//        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-//        scene = new Scene(root);
-//        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
-//        stage.setTitle("Login Page");
-//        stage.setScene(scene);
-//        stage.show();
-
         Parent root = FXMLLoader.load(getClass().getResource("timer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/signUpPage.css").toExternalForm());
-        stage.setTitle("Sign Up Page");
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
+        stage.setTitle("Timer");
         stage.setScene(scene);
         stage.show();
     }
