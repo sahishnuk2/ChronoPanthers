@@ -31,6 +31,10 @@ public class TaskManager implements Initializable {
     private TableColumn<Task, Boolean> completed;
     @FXML
     private TableColumn<Task, Boolean> overdue;
+    @FXML
+    private ComboBox<TaskComparator.SortMode> sortBox;
+    @FXML
+    private Label sorterLabel;
 
     private static final ObservableList<Task> tasks = FXCollections.observableArrayList();
 
@@ -43,6 +47,9 @@ public class TaskManager implements Initializable {
         overdue.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("isOverdue"));
 
         taskTable.setItems(tasks);
+
+        sortBox.getItems().addAll(TaskComparator.SortMode.values());
+
     }
 
     public void addTask() throws IOException {
@@ -52,6 +59,7 @@ public class TaskManager implements Initializable {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(dialogPane);
         dialog.setTitle("Add new task");
+        dialogPane.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/addingTaskPage.css").toExternalForm());
 
         dialog.showAndWait();
 
@@ -63,6 +71,16 @@ public class TaskManager implements Initializable {
         } else {
 
             tasks.add(task);
+        }
+    }
+
+    public void sortTasks() {
+        TaskComparator.SortMode selectedMode = sortBox.getValue();
+        if (selectedMode != null) {
+            sorterLabel.setText("");
+            FXCollections.sort(tasks, new TaskComparator(selectedMode));
+        } else {
+            sorterLabel.setText("Choose a sorter!");
         }
     }
 
