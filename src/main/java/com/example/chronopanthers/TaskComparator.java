@@ -13,15 +13,15 @@ public class TaskComparator implements Comparator<Task> {
 
     @Override
     public int compare(Task o1, Task o2) {
-        if (mode == SortMode.DEADLINE_FIRST) {
+        if (o1.getIsCompleted() && !o2.getIsCompleted()) {
+            return 1; // o1 is completed, but o2 is not
+        } else if (!o1.getIsCompleted() && o2.getIsCompleted()) {
+            return -1; //o1 not completed, but o2 is
+        } else if (mode == SortMode.DEADLINE_FIRST) {
             // deadline tasks before normal task
             // deadline tasks to be sorted by deadline
             // completed tasks to be at the bottom
-            if (o1.getIsCompleted() && !o2.getIsCompleted()) {
-                return 1; // o1 is completed, but o2 is not
-            } else if (!o1.getIsCompleted() && o2.getIsCompleted()) {
-                return -1; //o1 not completed, but o2 is
-            } else if (o1 instanceof DeadlineTask && !(o2 instanceof DeadlineTask)) {
+            if (o1 instanceof DeadlineTask && !(o2 instanceof DeadlineTask)) {
                 // both completed
                 // or both not completed
                 return -1; // o1 is deadline task, o2 is not;
@@ -31,23 +31,22 @@ public class TaskComparator implements Comparator<Task> {
                 return 1; // o2 is deadline task, o1 is not;
             } else if (o1 instanceof DeadlineTask && o2 instanceof DeadlineTask) {
                 // both deadline
-                if (o1.getDeadline().isBefore(o2.getDeadline())) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+                return o1.getDeadline().compareTo(o2.getDeadline());
             } else {
                 //both normal
                 return 0;
             }
+        } else if (mode == SortMode.NAME) {
+            // alphabetically sort
+            return o1.getTaskName().compareToIgnoreCase(o2.getTaskName());
+        } else if (mode == SortMode.PRIORITY) {
+                // both completed
+                // or both not completed
+                return Integer.compare(o1.getPriority().getLevel(), o2.getPriority().getLevel());
+        } else if (mode == SortMode.SUBJECT) {
+            // Still TO DO
+            return 0;
         }
-//        } else if (mode == SortMode.NAME) {
-//            return -1;
-//        } else if (mode == SortMode.PRIORITY) {
-//            return -1;
-//        } else if (mode == SortMode.SUBJECT) {
-//            return -1;
-//        }
         return 0;
     }
 }

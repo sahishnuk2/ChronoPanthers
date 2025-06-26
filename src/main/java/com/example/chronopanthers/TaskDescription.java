@@ -22,6 +22,8 @@ public class TaskDescription implements Initializable {
     private Button addTaskButton;
     @FXML
     private Label username;
+    @FXML
+    private ComboBox<Task.Priority> priorityComboBox;
 
     private Task task;
 
@@ -36,6 +38,8 @@ public class TaskDescription implements Initializable {
                 dueDate.setDisable(true);
             }
         });
+
+        priorityComboBox.getItems().addAll(Task.Priority.values());
     }
 
     public void addTask() {
@@ -44,8 +48,14 @@ public class TaskDescription implements Initializable {
             return;
         }
 
+        if (priorityComboBox.getValue() == null) {
+            username.setText("Choose Priority!");
+            return;
+        }
+
         String taskname = taskName.getText();
         boolean isNormal = taskType.getSelectedToggle() == normal;
+        Task.Priority priority = priorityComboBox.getValue();
         LocalDate date = dueDate.getValue();
 
         if (!isNormal && date == null) {
@@ -54,9 +64,9 @@ public class TaskDescription implements Initializable {
         }
 
         if (isNormal) {
-            task = new NormalTask(taskname);
+            task = new NormalTask(taskname, priority);
         } else {
-            task = new DeadlineTask(taskname, date);
+            task = new DeadlineTask(taskname, date, priority);
         }
         ((Stage) normal.getScene().getWindow()).close();
     }

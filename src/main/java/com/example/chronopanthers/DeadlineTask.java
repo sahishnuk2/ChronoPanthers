@@ -7,8 +7,8 @@ public class DeadlineTask extends Task{
     private LocalDate deadline;
     private boolean isOverdue = false;
 
-    public DeadlineTask(String taskName, LocalDate deadline) {
-        super(taskName);
+    public DeadlineTask(String taskName, LocalDate deadline, Priority priority) {
+        super(taskName, priority);
         this.deadline = deadline;
     }
 
@@ -27,6 +27,8 @@ public class DeadlineTask extends Task{
     public String getTaskType() {
         return "Deadline";
     }
+
+
 
     @Override
     public String toString() {

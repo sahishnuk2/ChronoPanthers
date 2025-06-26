@@ -3,8 +3,8 @@ package com.example.chronopanthers;
 import java.time.LocalDate;
 
 public class NormalTask extends Task {
-    public NormalTask(String taskName) {
-        super(taskName);
+    public NormalTask(String taskName, Priority priority) {
+        super(taskName, priority);
     }
 
     @Override

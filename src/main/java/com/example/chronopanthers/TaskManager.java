@@ -35,6 +35,10 @@ public class TaskManager implements Initializable {
     private ComboBox<TaskComparator.SortMode> sortBox;
     @FXML
     private Label sorterLabel;
+    @FXML
+    private TableColumn<Task, String> priority;
+    @FXML
+    private Button completeTaskButton;
 
     private static final ObservableList<Task> tasks = FXCollections.observableArrayList();
 
@@ -45,6 +49,8 @@ public class TaskManager implements Initializable {
         dueDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("deadline"));
         completed.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("isCompleted"));
         overdue.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("isOverdue"));
+        priority.setCellValueFactory(new PropertyValueFactory<Task, String>("priority"));
+
 
         taskTable.setItems(tasks);
 
@@ -82,6 +88,17 @@ public class TaskManager implements Initializable {
         } else {
             sorterLabel.setText("Choose a sorter!");
         }
+    }
+
+    public void completeTask() {
+        Task t = taskTable.getSelectionModel().getSelectedItem();
+        if (t == null || t.getIsCompleted()) {
+            sorterLabel.setText("Task not chosen or already completed");
+            return;
+        }
+        t.complete();
+        taskTable.refresh();
+        FXCollections.sort(tasks, new TaskComparator(TaskComparator.SortMode.SUBJECT));
     }
 
     private Stage stage;
