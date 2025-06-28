@@ -4,12 +4,22 @@ import java.sql.*;
 public class SQliteConnection {
     public static Connection connector() {
         try {
-            Class.forName("org.sqlite.JDBC");
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:PomodoroLoginDB.db");
-            System.out.println("Connection successful!");
+            Class.forName("org.postgresql.Driver");
+
+            Connection conn = DriverManager.getConnection(DatabaseConfig.getJdbcUrl());
+
+            System.out.println("Connection to Supabase successful!");
             return conn;
+
+        } catch (ClassNotFoundException e) {
+            System.err.println("PostgreSQL JDBC Driver not found: " + e.getMessage());
+            return null;
+        } catch (SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+            System.err.println("JDBC URL: " + DatabaseConfig.getJdbcUrl());
+            return null;
         } catch (Exception e) {
-            System.out.println(e);
+            System.err.println("Unexpected error: " + e.getMessage());
             return null;
         }
     }
@@ -50,7 +60,7 @@ public class SQliteConnection {
 
     public static int[] getSessionCounts(String username) {
         String sql = "SELECT workSessions, breakSessions FROM loginDetails WHERE username = ?";
-        int[] counts = {0, 0}; // [workSessions, breakSessions]
+        int[] counts = {0, 0};
 
         try (Connection conn = connector();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -73,5 +83,14 @@ public class SQliteConnection {
 
         return counts;
     }
-}
 
+    // Additional method to test connection
+    public static boolean testConnection() {
+        try (Connection conn = connector()) {
+            return conn != null && !conn.isClosed();
+        } catch (SQLException e) {
+            System.err.println("Connection test failed: " + e.getMessage());
+            return false;
+        }
+    }
+}

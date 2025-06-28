@@ -257,11 +257,20 @@ public class Controller implements Initializable {
     }
 
     public void taskManager(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("taskManager.fxml"));
+        // Load TaskManager with current user context
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
+        Parent root = loader.load();
+
+        // Get the TaskManager controller and set the current user
+        TaskManager taskManagerController = loader.getController();
+        if (currentUsername != null) {
+            taskManagerController.setCurrentUser(currentUsername);
+        }
+
         stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
-        stage.setTitle("Login Page");
+        stage.setTitle("Task Manager");
         stage.setScene(scene);
         stage.show();
 

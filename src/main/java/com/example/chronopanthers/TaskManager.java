@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TaskManager implements Initializable {
@@ -39,11 +40,21 @@ public class TaskManager implements Initializable {
     private TableColumn<Task, String> priority;
     @FXML
     private Button completeTaskButton;
+    @FXML
+    private Button deleteTaskButton;
+    @FXML
+    private Button refreshButton;
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label taskStatsLabel;
 
-    private static final ObservableList<Task> tasks = FXCollections.observableArrayList();
+    private ObservableList<Task> tasks = FXCollections.observableArrayList();
+    private String currentUsername;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Set up table columns
         type.setCellValueFactory(new PropertyValueFactory<Task, String>("taskType"));
         name.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
         dueDate.setCellValueFactory(new PropertyValueFactory<Task, LocalDate>("deadline"));
@@ -51,14 +62,89 @@ public class TaskManager implements Initializable {
         overdue.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("isOverdue"));
         priority.setCellValueFactory(new PropertyValueFactory<Task, String>("priority"));
 
-
         taskTable.setItems(tasks);
-
         sortBox.getItems().addAll(TaskComparator.SortMode.values());
 
+        // Set default username (this should be set by the calling controller)
+        currentUsername = "testuser"; // Default for testing
+        updateLabels();
+
+        // Test database connection
+        if (TaskDatabaseManager.testConnection()) {
+            System.out.println("✓ Task database connection successful");
+        } else {
+            sorterLabel.setText("Database connection failed");
+        }
     }
 
+    // Method to set the current user (call this from your main controller)
+    public void setCurrentUser(String username) {
+        this.currentUsername = username;
+        updateLabels();
+        loadUserTasks();
+    }
+
+    private void updateLabels() {
+        if (currentUsername != null) {
+            if (usernameLabel != null) {
+                usernameLabel.setText("Tasks for: " + currentUsername);
+            }
+            updateTaskStats();
+        }
+    }
+
+    private void updateTaskStats() {
+        if (taskStatsLabel != null && currentUsername != null) {
+            int totalTasks = TaskDatabaseManager.getUserTaskCount(currentUsername);
+            int completedTasks = TaskDatabaseManager.getUserCompletedTaskCount(currentUsername);
+            int pendingTasks = totalTasks - completedTasks;
+
+            taskStatsLabel.setText(String.format("Total: %d | Completed: %d | Pending: %d",
+                    totalTasks, completedTasks, pendingTasks));
+        }
+    }
+
+    // Load tasks from database
+    public void loadUserTasks() {
+        if (currentUsername == null) {
+            sorterLabel.setText("No user logged in");
+            return;
+        }
+
+        try {
+            List<Task> userTasks = TaskDatabaseManager.getUserTasks(currentUsername);
+            tasks.clear();
+            tasks.addAll(userTasks);
+
+            sorterLabel.setText("Loaded " + userTasks.size() + " tasks");
+            updateTaskStats();
+
+            // Check for overdue tasks
+            List<Task> overdueTasks = TaskDatabaseManager.getOverdueTasks(currentUsername);
+            if (!overdueTasks.isEmpty()) {
+                sorterLabel.setText(sorterLabel.getText() + " (" + overdueTasks.size() + " overdue!)");
+            }
+
+        } catch (Exception e) {
+            sorterLabel.setText("Failed to load tasks");
+            System.err.println("Error loading tasks: " + e.getMessage());
+        }
+    }
+
+    // Refresh tasks from database
+    @FXML
+    public void refreshTasks() {
+        loadUserTasks();
+        sorterLabel.setText("Tasks refreshed");
+    }
+
+    @FXML
     public void addTask() throws IOException {
+        if (currentUsername == null) {
+            sorterLabel.setText("Please log in first");
+            return;
+        }
+
         FXMLLoader fxmlLoader = new FXMLLoader(ChronoPanthers.class.getResource("addingTaskPage.fxml"));
         DialogPane dialogPane = fxmlLoader.load();
 
@@ -72,14 +158,21 @@ public class TaskManager implements Initializable {
         TaskDescription controller = fxmlLoader.getController();
         Task task = controller.getTask();
 
-        if (task == null) {
+        if (task != null) {
+            // Save to database
+            boolean success = TaskDatabaseManager.addTask(currentUsername, task);
 
-        } else {
-
-            tasks.add(task);
+            if (success) {
+                // Reload tasks from database to get the latest data
+                loadUserTasks();
+                sorterLabel.setText("Task added successfully!");
+            } else {
+                sorterLabel.setText("Failed to add task to database");
+            }
         }
     }
 
+    @FXML
     public void sortTasks() {
         TaskComparator.SortMode selectedMode = sortBox.getValue();
         if (selectedMode != null) {
@@ -90,15 +183,90 @@ public class TaskManager implements Initializable {
         }
     }
 
+    @FXML
     public void completeTask() {
-        Task t = taskTable.getSelectionModel().getSelectedItem();
-        if (t == null || t.getIsCompleted()) {
-            sorterLabel.setText("Task not chosen or already completed");
+        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+        if (selectedTask == null) {
+            sorterLabel.setText("Please select a task to complete");
             return;
         }
-        t.complete();
-        taskTable.refresh();
-        FXCollections.sort(tasks, new TaskComparator(TaskComparator.SortMode.SUBJECT));
+
+        if (selectedTask.getIsCompleted()) {
+            sorterLabel.setText("Task is already completed");
+            return;
+        }
+
+        // Update in database
+        boolean success = TaskDatabaseManager.updateTaskCompletion(
+                currentUsername,
+                selectedTask.getTaskName(),
+                true
+        );
+
+        if (success) {
+            // Update local object
+            selectedTask.complete();
+            taskTable.refresh();
+            updateTaskStats();
+
+            // Re-sort to move completed tasks to bottom
+            FXCollections.sort(tasks, new TaskComparator(TaskComparator.SortMode.DEADLINE_FIRST));
+
+            sorterLabel.setText("Task marked as completed!");
+        } else {
+            sorterLabel.setText("Failed to update task in database");
+        }
+    }
+
+    // New method to delete selected task
+    @FXML
+    public void deleteTask() {
+        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+        if (selectedTask == null) {
+            sorterLabel.setText("Please select a task to delete");
+            return;
+        }
+
+        // Confirm deletion
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Delete Task");
+        confirmation.setHeaderText("Are you sure you want to delete this task?");
+        confirmation.setContentText("Task: " + selectedTask.getTaskName());
+
+        if (confirmation.showAndWait().get() == ButtonType.OK) {
+            // Delete from database
+            boolean success = TaskDatabaseManager.deleteTask(currentUsername, selectedTask.getTaskName());
+
+            if (success) {
+                // Remove from local list
+                tasks.remove(selectedTask);
+                updateTaskStats();
+                sorterLabel.setText("Task deleted successfully!");
+            } else {
+                sorterLabel.setText("Failed to delete task from database");
+            }
+        }
+    }
+
+    // Show only overdue tasks
+    @FXML
+    public void showOverdueTasks() {
+        if (currentUsername == null) {
+            sorterLabel.setText("No user logged in");
+            return;
+        }
+
+        List<Task> overdueTasks = TaskDatabaseManager.getOverdueTasks(currentUsername);
+        tasks.clear();
+        tasks.addAll(overdueTasks);
+
+        sorterLabel.setText("Showing " + overdueTasks.size() + " overdue tasks");
+    }
+
+    // Show all tasks (reset filter)
+    @FXML
+    public void showAllTasks() {
+        loadUserTasks();
     }
 
     private Stage stage;
@@ -106,7 +274,16 @@ public class TaskManager implements Initializable {
     private Parent root;
 
     public void timer(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("timer.fxml"));
+        // Load the timer page with the current user
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
+        Parent root = loader.load();
+
+        // Pass the current user to the timer controller
+        Controller timerController = loader.getController();
+        if (currentUsername != null) {
+            timerController.setCurrentUser(currentUsername);
+        }
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
