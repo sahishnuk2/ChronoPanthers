@@ -17,7 +17,9 @@ Step 7 - Replace your password into the URL
 Step 8 - Click into ChronoPanthers.java and Run
 
 ---Users Table---
+
 -- Create the loginDetails table
+
 CREATE TABLE loginDetails (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
@@ -28,14 +30,18 @@ CREATE TABLE loginDetails (
 );
 
 -- Create index for faster username lookups
+
 CREATE INDEX idx_loginDetails_username ON loginDetails(username);
 
 -- Insert some test data (optional)
+
 INSERT INTO loginDetails (username, password, workSessions, breakSessions) 
 VALUES ('testuser', 'testpass', 0, 0);
 
 ---TaskList Table---
+
 -- Create the tasks table
+
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
@@ -49,12 +55,15 @@ CREATE TABLE tasks (
 );
 
 -- Create index for faster username lookups
+
 CREATE INDEX idx_tasks_username ON tasks(username);
 
 -- Create index for faster task filtering
+
 CREATE INDEX idx_tasks_completed ON tasks(is_completed);
 
 -- Create function to automatically update updated_at timestamp
+
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -64,12 +73,14 @@ END;
 $$ language 'plpgsql';
 
 -- Create trigger to automatically update updated_at
+
 CREATE TRIGGER update_tasks_updated_at 
     BEFORE UPDATE ON tasks 
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
 
 -- Insert some sample data (optional)
+
 INSERT INTO tasks (username, task_name, task_type, priority, due_date) VALUES
 ('testuser', 'Complete project report', 'Deadline', 'HIGH', '2025-07-15'),
 ('testuser', 'Review code', 'Normal', 'MEDIUM', NULL),
