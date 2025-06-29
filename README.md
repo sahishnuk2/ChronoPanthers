@@ -1,3 +1,72 @@
+How to run this code:
+Step 1 - Git clone the project
+Step 2 - Rename .env.example to .env
+Step 3 - Sign up for Supabase and Create a Database (Remember your password)
+Step 4 - Create the needed tables by copying the sql codes provided after the instructions.
+Step 5 - Click Connect at the top of the Supabase page, then select JDBC as the Type
+Step 6 - Copy and paste the Transaction Pooler URL and replace the [Your JDBC Supabase URI here] with the URL
+Step 7 - Replace your password into the URL
+Step 8 - Click into ChronoPanthers.java and Run
+
+---Users Table---
+-- Create the loginDetails table
+CREATE TABLE loginDetails (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    workSessions INTEGER DEFAULT 0,
+    breakSessions INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Create index for faster username lookups
+CREATE INDEX idx_loginDetails_username ON loginDetails(username);
+
+-- Insert some test data (optional)
+INSERT INTO loginDetails (username, password, workSessions, breakSessions) 
+VALUES ('testuser', 'testpass', 0, 0);
+
+---TaskList Table---
+-- Create the tasks table
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    task_name VARCHAR(500) NOT NULL,
+    task_type VARCHAR(50) NOT NULL, -- 'Normal' or 'Deadline'
+    priority VARCHAR(20) NOT NULL, -- 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'NONE'
+    is_completed BOOLEAN DEFAULT FALSE,
+    due_date DATE NULL, -- Only for deadline tasks
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Create index for faster username lookups
+CREATE INDEX idx_tasks_username ON tasks(username);
+
+-- Create index for faster task filtering
+CREATE INDEX idx_tasks_completed ON tasks(is_completed);
+
+-- Create function to automatically update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = TIMEZONE('utc'::text, NOW());
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger to automatically update updated_at
+CREATE TRIGGER update_tasks_updated_at 
+    BEFORE UPDATE ON tasks 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Insert some sample data (optional)
+INSERT INTO tasks (username, task_name, task_type, priority, due_date) VALUES
+('testuser', 'Complete project report', 'Deadline', 'HIGH', '2025-07-15'),
+('testuser', 'Review code', 'Normal', 'MEDIUM', NULL),
+('testuser', 'Prepare presentation', 'Deadline', 'CRITICAL', '2025-07-01');
+
 NUS Orbital 2025 - Milestone 1
 
 Proposed Level of Achievement: 
