@@ -1,11 +1,19 @@
 How to run this code:
+
 Step 1 - Git clone the project
+
 Step 2 - Rename .env.example to .env
+
 Step 3 - Sign up for Supabase and Create a Database (Remember your password)
+
 Step 4 - Create the needed tables by copying the sql codes provided after the instructions.
+
 Step 5 - Click Connect at the top of the Supabase page, then select JDBC as the Type
+
 Step 6 - Copy and paste the Transaction Pooler URL and replace the [Your JDBC Supabase URI here] with the URL
+
 Step 7 - Replace your password into the URL
+
 Step 8 - Click into ChronoPanthers.java and Run
 
 ---Users Table---
