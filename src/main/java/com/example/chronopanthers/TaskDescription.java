@@ -24,6 +24,8 @@ public class TaskDescription implements Initializable {
     private Label username;
     @FXML
     private ComboBox<Task.Priority> priorityComboBox;
+    @FXML
+    private Button cancel;
 
     private Task task;
 
@@ -73,5 +75,10 @@ public class TaskDescription implements Initializable {
 
     public Task getTask() {
         return this.task;
+    }
+
+    public void cancel() {
+        task = null;
+        ((Stage) cancel.getScene().getWindow()).close();
     }
 }
