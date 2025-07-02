@@ -54,6 +54,7 @@ public class TaskManager implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        taskTable.setFixedCellSize(40);
         // Set up table columns
         type.setCellValueFactory(new PropertyValueFactory<Task, String>("taskType"));
         name.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));

@@ -16,6 +16,7 @@ public class ChronoPanthers extends Application {
         //FXMLLoader fxmlLoader = new FXMLLoader(ChronoPanthers.class.getResource("taskManager.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
+        //scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
         stage.setTitle("Login Page");
         stage.setScene(scene);
         stage.show();
