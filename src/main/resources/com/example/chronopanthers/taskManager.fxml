@@ -38,6 +38,6 @@
       <ComboBox fx:id="priorityFilter" layoutX="167.0" layoutY="64.0" prefHeight="26.0" prefWidth="117.0" />
       <Label layoutX="6.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Sort By:" />
       <Label layoutX="288.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Filter by Task Type:" />
-      <Label layoutX="167.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Filter by Priotity:" />
+      <Label layoutX="167.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Filter by Priority:" />
    </children>
 </AnchorPane>
