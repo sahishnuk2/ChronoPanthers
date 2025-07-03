@@ -3,7 +3,7 @@ package com.example.chronopanthers;
 import java.util.Comparator;
 
 public class TaskComparator implements Comparator<Task> {
-    public enum SortMode {DEADLINE_FIRST, NAME, PRIORITY, SUBJECT}
+    public enum SortMode {DEADLINE_FIRST, NAME, PRIORITY, NIL}
 
     private SortMode mode;
 
@@ -43,7 +43,7 @@ public class TaskComparator implements Comparator<Task> {
                 // both completed
                 // or both not completed
                 return Integer.compare(o1.getPriority().getLevel(), o2.getPriority().getLevel());
-        } else if (mode == SortMode.SUBJECT) {
+        } else if (mode == SortMode.NIL) {
             // Still TO DO
             return 0;
         }

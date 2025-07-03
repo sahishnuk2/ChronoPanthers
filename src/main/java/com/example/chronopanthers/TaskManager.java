@@ -2,6 +2,7 @@ package com.example.chronopanthers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,9 +49,16 @@ public class TaskManager implements Initializable {
     private Label usernameLabel;
     @FXML
     private Label taskStatsLabel;
+    @FXML
+    private TextField searchName;
+    @FXML
+    private ComboBox<String> typeFilter;
+    @FXML
+    private ComboBox<Task.Priority> priorityFilter;
 
     private ObservableList<Task> tasks = FXCollections.observableArrayList();
     private String currentUsername;
+    private FilteredList<Task> filteredTasks;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,8 +71,39 @@ public class TaskManager implements Initializable {
         overdue.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("isOverdue"));
         priority.setCellValueFactory(new PropertyValueFactory<Task, String>("priority"));
 
-        taskTable.setItems(tasks);
+        // Tasks to be in this list for filtering
+        filteredTasks = new FilteredList<>(tasks, p -> true);
+
+        typeFilter.getItems().addAll("All", "Normal", "Deadline");
+        typeFilter.setValue("All");
+
+        priorityFilter.getItems().add(null);
+        priorityFilter.getItems().addAll(Task.Priority.values());
+        priorityFilter.setValue(null);
+
         sortBox.getItems().addAll(TaskComparator.SortMode.values());
+        sortBox.setValue(TaskComparator.SortMode.NIL);
+
+
+        searchName.textProperty().addListener((obs, oldVal, newVal) -> {
+            updateFilter(filteredTasks);
+        });
+
+        typeFilter.valueProperty().addListener((obs, oldVal, newVal) -> {
+            updateFilter(filteredTasks);
+        });
+
+        priorityFilter.valueProperty().addListener((obs, oldVal, newVal) -> {
+            updateFilter(filteredTasks);
+        });
+
+        sortBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            sortTasks();
+        });
+
+        taskTable.setItems(filteredTasks);
+
+        
 
         // Set default username (this should be set by the calling controller)
         currentUsername = "testuser"; // Default for testing
@@ -76,7 +115,40 @@ public class TaskManager implements Initializable {
         } else {
             sorterLabel.setText("Database connection failed");
         }
+
+
+
     }
+
+    private void updateFilter(FilteredList<Task> filteredList) {
+        String prefix = searchName.getText().toLowerCase();
+        Task.Priority priority = priorityFilter.getValue(); // can be null
+        String type = typeFilter.getValue();
+
+        filteredList.setPredicate(task -> {
+            boolean matchName = prefix == null || prefix.isEmpty() || task.getTaskName().toLowerCase().contains(prefix);
+            boolean matchPriority = priority == null || task.getPriority().equals(priority);
+            boolean matchType = type.equals("All") || task.getTaskType().equalsIgnoreCase(type);
+            return matchName && matchType && matchPriority;
+        });
+    }
+
+//    private boolean filterByPriority (Task task, Task.Priority priority) {
+//        return true;
+//    }
+//
+//    private boolean filterByTaskType (Task task, String TaskType) {
+//        return task.getTaskType().equalsIgnoreCase(TaskType);
+//    }
+//
+//    private boolean filterByName(Task task, String prefix) {
+//        if (prefix == null || prefix.isEmpty()) return true; // no need to filter
+//
+//        prefix  = prefix.toLowerCase();
+//        return task.getTaskName().toLowerCase().contains(prefix);
+//        // task.getTaskType().toLowerCase().contains(prefix);
+//        // task.getPriority().toLowerCase().contains(prefix);
+//    }
 
     // Method to set the current user (call this from your main controller)
     public void setCurrentUser(String username) {

@@ -1,3 +1,7 @@
+#mainPane {
+    -fx-background-color: #f0f9ff;
+}
+
 .button {
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;
