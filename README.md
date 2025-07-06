@@ -14,7 +14,9 @@ Step 6 - Copy and paste the Transaction Pooler URL and replace the [Your JDBC Su
 
 Step 7 - Replace your password into the URL
 
-Step 8 - Click into ChronoPanthers.java and Run
+step 8 - Sign up and get API key from https://openrouter.ai/ and paste it into .env
+
+Step 9 - Click into ChronoPanthers.java and Run
 
 ---Users Table---
 
