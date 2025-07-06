@@ -364,4 +364,22 @@ public class TaskManager implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
+    @FXML
+    public void aiAgent(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
+        Parent root = loader.load();
+
+        AIAgentController aiController = loader.getController();
+        if (currentUsername != null) {
+            aiController.setCurrentUser(currentUsername);
+        }
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
+        stage.setTitle("AI Study Assistant");
+        stage.setScene(scene);
+        stage.show();
+    }
 }

@@ -281,4 +281,22 @@ public class Controller implements Initializable {
 //        stage.setScene(scene);
 //        stage.show();
     }
+
+    @FXML
+    public void aiAgent(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
+        Parent root = loader.load();
+
+        AIAgentController aiController = loader.getController();
+        if (currentUsername != null) {
+            aiController.setCurrentUser(currentUsername);
+        }
+
+        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
+        stage.setTitle("AI Study Assistant");
+        stage.setScene(scene);
+        stage.show();
+    }
 }
