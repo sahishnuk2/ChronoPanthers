@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainPane" prefHeight="719.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.TaskManager">
+<AnchorPane fx:id="mainPane" prefHeight="720.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.TaskManager">
    <children>
       <TableView fx:id="taskTable" layoutX="6.0" layoutY="94.0" prefHeight="580.0" prefWidth="589.0">
         <columns>
