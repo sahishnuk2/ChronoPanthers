@@ -51,6 +51,25 @@ public class TaskDatabaseManager {
         return false;
     }
 
+    public static boolean taskExists(String username, String taskName) {
+        //String sql = "SELECT 1 FROM tasks WHERE username = ? AND task_name = ?";
+        String sql = "SELECT 1 FROM tasks WHERE username = ? AND LOWER(task_name) = LOWER(?) LIMIT 1";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, taskName);
+
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next(); // true if a row exists
+
+        } catch (SQLException e) {
+            System.err.println("Error checking task existence: " + e.getMessage());
+            return false;
+        }
+    }
+
     // Get all tasks for a specific user
     public static List<Task> getUserTasks(String username) {
         List<Task> tasks = new ArrayList<>();

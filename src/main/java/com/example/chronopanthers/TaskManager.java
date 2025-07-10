@@ -226,10 +226,13 @@ public class TaskManager implements Initializable {
         dialog.setTitle("Add new task");
         dialogPane.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/addingTaskPage.css").toExternalForm());
 
-        dialog.showAndWait();
-
         TaskDescription controller = fxmlLoader.getController();
+        controller.setUser(currentUsername);
+
+        dialog.showAndWait();
         Task task = controller.getTask();
+
+
 
         if (task != null) {
             // Save to database
@@ -319,6 +322,44 @@ public class TaskManager implements Initializable {
                 sorterLabel.setText("Failed to delete task from database");
             }
         }
+    }
+
+    public void editTask() throws IOException {
+        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+        if (selectedTask == null) {
+            sorterLabel.setText("Please select a task to edit");
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(ChronoPanthers.class.getResource("addingTaskPage.fxml"));
+        DialogPane dialogPane = loader.load();
+
+        TaskDescription taskDescription = loader.getController();
+        taskDescription.setTask(selectedTask);
+        taskDescription.setUser(currentUsername);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setDialogPane(dialogPane);
+        dialog.setTitle("Edit Task");
+        dialogPane.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/addingTaskPage.css").toExternalForm());
+
+        dialog.showAndWait();
+
+        Task editedTask = taskDescription.getTask();
+        if (editedTask != null) {
+            boolean deleted = TaskDatabaseManager.deleteTask(currentUsername, selectedTask.getTaskName());
+
+            boolean added = TaskDatabaseManager.addTask(currentUsername, editedTask);
+            if (deleted && added) {
+                sorterLabel.setText("Task edited successfully!");
+                loadUserTasks();
+            } else {
+                sorterLabel.setText("Failed to edit in database");
+            }
+
+            //loadUserTasks();
+        }
+
     }
 
     // Show only overdue tasks

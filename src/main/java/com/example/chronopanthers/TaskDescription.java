@@ -28,8 +28,9 @@ public class TaskDescription implements Initializable {
     private Button cancel;
 
     private Task task;
-
-
+    private boolean isEditing = false;
+    private String originalTaskName;
+    private String user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -42,6 +43,10 @@ public class TaskDescription implements Initializable {
         });
 
         priorityComboBox.getItems().addAll(Task.Priority.values());
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public void addTask() {
@@ -65,6 +70,11 @@ public class TaskDescription implements Initializable {
             return;
         }
 
+        if (!isEditing && TaskDatabaseManager.taskExists(user, taskname)) {
+            username.setText("Task with this name already exists!");
+            return;
+        }
+
         if (isNormal) {
             task = new NormalTask(taskname, priority);
         } else {
@@ -81,4 +91,26 @@ public class TaskDescription implements Initializable {
         task = null;
         ((Stage) cancel.getScene().getWindow()).close();
     }
+
+    // To be used only for editing
+    public void setTask(Task task) {
+        this.task = task;
+        this.isEditing = true;
+        this.originalTaskName = task.getTaskName();
+        taskName.setText(originalTaskName);
+        priorityComboBox.setValue(task.getPriority());
+
+        if (task instanceof NormalTask) {
+            normal.setSelected(true);
+            dueDate.setDisable(true);
+        } else {
+            deadline.setSelected(true);
+            dueDate.setDisable(false);
+            dueDate.setValue(task.getDeadline());
+        }
+
+        addTaskButton.setText("Save");
+    }
+
+
 }
