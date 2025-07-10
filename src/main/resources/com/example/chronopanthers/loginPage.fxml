@@ -7,9 +7,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="303.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.LoginPageController">
+<AnchorPane fx:id="page" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.LoginPageController">
    <children>
-      <AnchorPane fx:id="loginFields" layoutX="34.0" layoutY="32.0" prefHeight="278.0" prefWidth="236.0">
+      <AnchorPane fx:id="loginFields" layoutX="182.0" layoutY="221.0" prefHeight="278.0" prefWidth="236.0">
          <children>
             <TextField fx:id="txtUsername" layoutX="38.0" layoutY="124.0" promptText="Username" />
             <PasswordField fx:id="txtPassword" layoutX="38.0" layoutY="176.0" promptText="Password" />
