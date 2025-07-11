@@ -368,6 +368,7 @@ public class AIAgentController implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
         stage.setTitle("Pomodoro Timer");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -386,6 +387,7 @@ public class AIAgentController implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
         stage.setTitle("Task Manager");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -403,6 +405,7 @@ public class AIAgentController implements Initializable {
             scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
             stage.setTitle("Login Page");
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.show();
         }
     }

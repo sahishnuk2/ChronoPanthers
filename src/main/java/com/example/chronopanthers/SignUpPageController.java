@@ -78,6 +78,7 @@ public class SignUpPageController implements Initializable {
                 scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
                 stage.setTitle("Login Page");
                 stage.setScene(scene);
+                stage.setResizable(false);
                 stage.show();
             }
         } catch (Exception e) {
@@ -92,6 +93,7 @@ public class SignUpPageController implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
         stage.setTitle("Login Page");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 }

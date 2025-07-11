@@ -231,15 +231,6 @@ public class Controller implements Initializable {
 
 
     public void logout(ActionEvent event) throws IOException {
-//        if (running) {
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setTitle("Logout");
-//            alert.setHeaderText("Timer still running");
-//            alert.setContentText("Please pause the timer before logging out");
-//            alert.showAndWait();
-//            return;
-//        }
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
@@ -252,6 +243,7 @@ public class Controller implements Initializable {
             scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
             stage.setTitle("Login Page");
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.show();
         }
     }
@@ -272,14 +264,8 @@ public class Controller implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
         stage.setTitle("Task Manager");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
-
-//        FXMLLoader fxmlLoader = new FXMLLoader(ChronoPanthers.class.getResource("taskManager.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load());
-//        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
-//        stage.setTitle("Login Page");
-//        stage.setScene(scene);
-//        stage.show();
     }
 
     @FXML
@@ -297,6 +283,7 @@ public class Controller implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
         stage.setTitle("AI Study Assistant");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 }

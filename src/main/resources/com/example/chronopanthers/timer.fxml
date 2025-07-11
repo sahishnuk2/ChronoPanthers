@@ -43,9 +43,9 @@
       <VBox fx:id="settings" alignment="CENTER" layoutX="105.0" layoutY="373.0" prefHeight="149.0" prefWidth="401.0" spacing="5.0">
          <children>
             <Label fx:id="changeSettings" alignment="CENTER" prefHeight="17.0" prefWidth="403.0" text="Work Time" />
-            <Spinner fx:id="workDurationInput" editable="true" prefHeight="26.0" prefWidth="334.0" />
+            <Spinner fx:id="workDurationInput" prefHeight="26.0" prefWidth="334.0" />
             <Label alignment="CENTER" prefHeight="17.0" prefWidth="409.0" text="Rest Time" />
-            <Spinner fx:id="breakDurationInput" editable="true" prefHeight="26.0" prefWidth="334.0" />
+            <Spinner fx:id="breakDurationInput" prefHeight="26.0" prefWidth="334.0" />
             <Button fx:id="applySettingsButton" alignment="CENTER" mnemonicParsing="false" onAction="#applySettings" prefHeight="26.0" prefWidth="319.0" text="Apply Setttings" />
          </children>
       </VBox>

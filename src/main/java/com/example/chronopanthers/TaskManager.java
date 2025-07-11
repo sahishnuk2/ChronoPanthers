@@ -403,6 +403,7 @@ public class TaskManager implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
         stage.setTitle("Timer");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -421,6 +422,7 @@ public class TaskManager implements Initializable {
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
         stage.setTitle("AI Study Assistant");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 }

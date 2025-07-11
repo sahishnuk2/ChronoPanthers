@@ -19,6 +19,7 @@ public class ChronoPanthers extends Application {
         //scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
         stage.setTitle("Login Page");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
