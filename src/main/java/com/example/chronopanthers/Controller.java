@@ -57,8 +57,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //Timers
-        //progressBar.setStyle("-fx-accent: #00FF00");
         //Spinners
         SpinnerValueFactory<Integer> valueFactoryWork =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60);
@@ -86,7 +84,8 @@ public class Controller implements Initializable {
                     workSessions++;
                     workSessionsDisplay.setText(String.valueOf(workSessions));
                     if (currentUsername != null) {
-                        updateWorkSession(currentUsername);
+                        SQliteConnection.updateWorkSession(currentUsername);
+                        SQliteConnection.logWorkSession(currentUsername, workTime / 60);
                         System.out.println("Work session completed and saved to database");
                     }
 
@@ -105,7 +104,8 @@ public class Controller implements Initializable {
                     breakSessions++;
                     breakSessionsDisplay.setText(String.valueOf(breakSessions));
                     if (currentUsername != null) {
-                        updateBreakSession(currentUsername);
+                        SQliteConnection.updateBreakSession(currentUsername);
+                        SQliteConnection.logBreakSession(currentUsername, breakTime / 60);
                         System.out.println("Break session completed and saved to database");
                     }
 
@@ -282,6 +282,27 @@ public class Controller implements Initializable {
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
         stage.setTitle("AI Study Assistant");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public void productivity(ActionEvent event) throws IOException {
+        // Load TaskManager with current user context
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
+        Parent root = loader.load();
+
+        // Get the TaskManager controller and set the current user
+        Productivity productivity = loader.getController();
+        productivity.setCurrentUsername(currentUsername);
+        if (currentUsername != null) {
+            productivity.setCurrentUsername(currentUsername);
+        }
+
+        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/productivity.css").toExternalForm());
+        stage.setTitle("Productivity Tracker");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

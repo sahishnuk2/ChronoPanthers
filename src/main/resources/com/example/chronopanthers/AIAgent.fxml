@@ -29,6 +29,7 @@
                             <items>
                                 <MenuItem onAction="#goToTimer" text="🍅 Pomodoro Timer" />
                                 <MenuItem onAction="#goToTaskManager" text="📋 Task Manager" />
+                        <MenuItem mnemonicParsing="false" onAction="#goToStats" text="Statistics" />
                                 <SeparatorMenuItem />
                                 <MenuItem onAction="#logout" text="🚪 Logout" />
                             </items>

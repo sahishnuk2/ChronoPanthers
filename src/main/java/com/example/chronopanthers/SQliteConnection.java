@@ -1,5 +1,7 @@
 package com.example.chronopanthers;
 import java.sql.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SQliteConnection {
     public static Connection connector() {
@@ -41,6 +43,24 @@ public class SQliteConnection {
         }
     }
 
+    public static void logWorkSession(String username, int duration) {
+        String sql = "INSERT INTO sessionslog (username, session_type, duration) VALUES (?, ?, ?)";
+
+        try (Connection conn = connector();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, "work");
+            pstmt.setInt(3, duration);
+
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println("Logged work session for " + username + ". Rows inserted: " + rowsInserted);
+
+        } catch (SQLException e) {
+            System.err.println("Error logging work session: " + e.getMessage());
+        }
+    }
+
     public static void updateBreakSession(String username) {
         String sql = "UPDATE loginDetails SET breakSessions = breakSessions + 1 WHERE username = ?";
 
@@ -55,6 +75,24 @@ public class SQliteConnection {
 
         } catch (SQLException e) {
             System.err.println("Error updating break session: " + e.getMessage());
+        }
+    }
+
+    public static void logBreakSession(String username, int duration) {
+        String sql = "INSERT INTO sessionslog (username, session_type, duration) VALUES (?, ?, ?)";
+
+        try (Connection conn = connector();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, "break");
+            pstmt.setInt(3, duration);
+
+            int rowsInserted = pstmt.executeUpdate();
+            System.out.println("Logged break session for " + username + ". Rows inserted: " + rowsInserted);
+
+        } catch (SQLException e) {
+            System.err.println("Error logging break session: " + e.getMessage());
         }
     }
 
@@ -82,6 +120,52 @@ public class SQliteConnection {
         }
 
         return counts;
+    }
+
+    public static Map<String, Integer> getWorkSessionLast7Days(String username) {
+        String sql = " SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, COUNT(*) AS task_count FROM sessionslog WHERE session_type = 'work' " +
+                     " AND username = ? AND created_at >= CURRENT_DATE - INTERVAL '6 days'" +
+                     "GROUP BY day ORDER BY day";
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = connector();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("day"), rs.getInt("task_count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static Map<String, Integer> getDurationLast7Days(String username) {
+        String sql = " SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, SUM(duration) AS total_duration FROM sessionslog WHERE session_type = 'work' " +
+                " AND username = ? AND created_at >= CURRENT_DATE - INTERVAL '6 days'" +
+                "GROUP BY day ORDER BY day";
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = connector();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("day"), rs.getInt("total_duration"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     // Additional method to test connection

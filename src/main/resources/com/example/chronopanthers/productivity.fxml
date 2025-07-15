@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="720.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Productivity">
+   <children>
+      <AnchorPane fx:id="barChartPane" layoutX="27.0" layoutY="31.0" prefHeight="291.0" prefWidth="262.0">
+         <children>
+            <BarChart fx:id="taskChart" layoutY="28.0" prefHeight="236.0" prefWidth="260.0" title="Tasks">
+              <xAxis>
+                <CategoryAxis fx:id="taskxAxis" side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="taskyAxis" side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children>
+      </AnchorPane>
+      <MenuButton layoutX="512.0" layoutY="18.0" mnemonicParsing="false" text="Menu">
+        <items>
+          <MenuItem mnemonicParsing="false" onAction="#Timer" text="🍅 Pomodoro Timer" />
+          <MenuItem mnemonicParsing="false" onAction="#TaskManager" text="📋 Task Manager" />
+            <MenuItem mnemonicParsing="false" onAction="#AIAgent" text="Study AI Assistant" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" onAction="#logout" text="🚪 Logout" />
+        </items>
+      </MenuButton>
+      <AnchorPane layoutX="22.0" layoutY="290.0" prefHeight="291.0" prefWidth="286.0">
+         <children>
+            <BarChart fx:id="workSessionsChart" layoutX="6.0" layoutY="14.0" prefHeight="236.0" prefWidth="260.0" title="WS">
+              <xAxis>
+                <CategoryAxis fx:id="workSessxAxis" side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="workSessyAxis" side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="300.0" layoutY="290.0" prefHeight="291.0" prefWidth="286.0">
+         <children>
+            <BarChart fx:id="durationChart" layoutX="6.0" layoutY="14.0" prefHeight="236.0" prefWidth="260.0" title="Duration">
+               <xAxis>
+                  <CategoryAxis fx:id="durationxAxis" side="BOTTOM" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis fx:id="durationyAxis" side="LEFT" />
+               </yAxis>
+            </BarChart>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

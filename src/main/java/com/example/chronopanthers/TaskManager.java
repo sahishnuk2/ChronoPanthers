@@ -16,8 +16,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class TaskManager implements Initializable {
@@ -132,23 +135,6 @@ public class TaskManager implements Initializable {
             return matchName && matchType && matchPriority;
         });
     }
-
-//    private boolean filterByPriority (Task task, Task.Priority priority) {
-//        return true;
-//    }
-//
-//    private boolean filterByTaskType (Task task, String TaskType) {
-//        return task.getTaskType().equalsIgnoreCase(TaskType);
-//    }
-//
-//    private boolean filterByName(Task task, String prefix) {
-//        if (prefix == null || prefix.isEmpty()) return true; // no need to filter
-//
-//        prefix  = prefix.toLowerCase();
-//        return task.getTaskName().toLowerCase().contains(prefix);
-//        // task.getTaskType().toLowerCase().contains(prefix);
-//        // task.getPriority().toLowerCase().contains(prefix);
-//    }
 
     // Method to set the current user (call this from your main controller)
     public void setCurrentUser(String username) {
@@ -280,14 +266,14 @@ public class TaskManager implements Initializable {
         );
 
         if (success) {
-            // Update local object
-            selectedTask.complete();
-            taskTable.refresh();
-            updateTaskStats();
-
-            // Re-sort to move completed tasks to bottom
-            FXCollections.sort(tasks, new TaskComparator(TaskComparator.SortMode.DEADLINE_FIRST));
-
+//            // Update local object
+//            selectedTask.complete();
+//            taskTable.refresh();
+//            updateTaskStats();
+//
+//            // Re-sort to move completed tasks to bottom
+//            FXCollections.sort(tasks, new TaskComparator(TaskComparator.SortMode.DEADLINE_FIRST));
+            loadUserTasks();
             sorterLabel.setText("Task marked as completed!");
         } else {
             sorterLabel.setText("Failed to update task in database");

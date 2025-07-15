@@ -410,6 +410,25 @@ public class AIAgentController implements Initializable {
         }
     }
 
+    @FXML
+    public void goToStats(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
+        Parent root = loader.load();
+
+        Productivity controller = loader.getController();
+        if (currentUsername != null) {
+            controller.setCurrentUsername(currentUsername);
+        }
+
+        Stage stage = getStageFromEvent(event);
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/productivity.css").toExternalForm());
+        stage.setTitle("Productivity Tracker");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
     // Helper method to get Stage from different event sources
     private Stage getStageFromEvent(ActionEvent event) {
         Object source = event.getSource();

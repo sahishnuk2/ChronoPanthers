@@ -1,9 +1,9 @@
 package com.example.chronopanthers;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TaskDatabaseManager {
 
@@ -53,7 +53,7 @@ public class TaskDatabaseManager {
 
     public static boolean taskExists(String username, String taskName) {
         //String sql = "SELECT 1 FROM tasks WHERE username = ? AND task_name = ?";
-        String sql = "SELECT 1 FROM tasks WHERE username = ? AND LOWER(task_name) = LOWER(?) LIMIT 1";
+        String sql = "SELECT 1 FROM tasks WHERE username = ? AND LOWER(task_name) = LOWER(?) AND is_completed = false LIMIT 1";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -73,7 +73,7 @@ public class TaskDatabaseManager {
     // Get all tasks for a specific user
     public static List<Task> getUserTasks(String username) {
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT task_name, task_type, priority, is_completed, due_date FROM tasks WHERE username = ? ORDER BY created_at DESC";
+        String sql = "SELECT task_name, task_type, priority, is_completed, due_date FROM tasks WHERE username = ? AND is_completed = false ORDER BY created_at DESC";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -253,4 +253,35 @@ public class TaskDatabaseManager {
 
         return overdueTasks;
     }
+
+    public static Map<String, Integer> getTasksCompletedLast7Days(String username) {
+        String sql = """
+            SELECT TO_CHAR(updated_at, 'YYYY-MM-DD') AS day, COUNT(*) AS task_count
+            FROM tasks
+            WHERE is_completed = TRUE
+              AND username = ?
+              AND updated_at >= CURRENT_DATE - INTERVAL '6 days'
+            GROUP BY day
+            ORDER BY day;
+        """;
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("day"), rs.getInt("task_count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
 }
+
