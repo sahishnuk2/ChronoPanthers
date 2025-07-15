@@ -1,6 +1,7 @@
 package com.example.chronopanthers;
 import javafx.scene.control.Alert;
-
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class LoginModel {
@@ -20,6 +21,21 @@ public class LoginModel {
         }
     }
 
+    // Simple hash function
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
+
     public boolean isLogin(String user, String pass) throws SQLException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -27,7 +43,7 @@ public class LoginModel {
         try {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user);
-            preparedStatement.setString(2, pass);
+            preparedStatement.setString(2, hashPassword(pass)); // Hash the password before comparing
 
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -38,15 +54,15 @@ public class LoginModel {
         } catch (Exception e) {
             return false;
         } finally {
-            preparedStatement.close();
-            resultSet.close();
+            if (preparedStatement != null) preparedStatement.close();
+            if (resultSet != null) resultSet.close();
         }
     }
 
     public boolean isSignUp(String user, String pass) throws SQLException {
         PreparedStatement selectStatement = null;
         ResultSet resultSet = null;
-        PreparedStatement insertStatement=  null;
+        PreparedStatement insertStatement = null;
         String query = "SELECT * FROM loginDetails WHERE username = ?";
         try {
             selectStatement = connection.prepareStatement(query);
@@ -59,7 +75,7 @@ public class LoginModel {
                 query = "INSERT INTO loginDetails (username, password) VALUES (?, ?)";
                 insertStatement = connection.prepareStatement(query);
                 insertStatement.setString(1, user);
-                insertStatement.setString(2, pass);
+                insertStatement.setString(2, hashPassword(pass)); // Hash the password before storing
                 int rowsInserted = insertStatement.executeUpdate();
                 if (rowsInserted > 0) {
                     return true;
@@ -73,9 +89,6 @@ public class LoginModel {
             if (selectStatement != null) selectStatement.close();
             if (insertStatement != null) insertStatement.close();
             if (resultSet != null) resultSet.close();
-//            insertStatement.close();
-//            resultSet.close();
         }
-
     }
 }
