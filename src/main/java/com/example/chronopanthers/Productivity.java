@@ -1,5 +1,6 @@
 package com.example.chronopanthers;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,9 +11,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,10 +20,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.time.format.TextStyle;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Productivity implements Initializable {
     @FXML
@@ -33,6 +29,10 @@ public class Productivity implements Initializable {
     private CategoryAxis taskxAxis, workSessxAxis, durationxAxis;
     @FXML
     private NumberAxis taskyAxis, workSessyAxis, durationyAxis;
+    @FXML
+    private ToggleGroup statsPer;
+    @FXML
+    private RadioButton weekly, monthly, yearly;
 
     private String currentUsername;
 
@@ -45,7 +45,17 @@ public class Productivity implements Initializable {
         workSessyAxis.setLabel("WS Completed");
         durationxAxis.setLabel("Day");
         durationyAxis.setLabel("Duration/min");
-        loadWeeklyChart();
+
+        statsPer.selectedToggleProperty().addListener((obs, oldValue, newValue) -> {
+            if (weekly.isSelected()) {
+                loadWeeklyChart();
+            } else if (monthly.isSelected()){
+                loadMonthlyChart();
+            } else {
+                loadYearlyChart();
+            }
+        });
+
     }
 
     public void setCurrentUsername(String username) {
@@ -57,6 +67,18 @@ public class Productivity implements Initializable {
         updateTaskBarByWeek(currentUsername);
         updateWorkChartByWeek(currentUsername);
         updateDurationChartByWeek(currentUsername);
+    }
+
+    public void loadMonthlyChart() {
+        updateTaskBarByWeek(currentUsername);
+        updateWorkChartByWeek(currentUsername);
+        updateDurationChartByMonth(currentUsername);
+    }
+
+    public void loadYearlyChart() {
+        updateTaskBarByWeek(currentUsername);
+        updateWorkChartByWeek(currentUsername);
+        updateDurationChartByYear(currentUsername);
     }
 
     // Tasks
@@ -102,13 +124,16 @@ public class Productivity implements Initializable {
     public void updateDurationChartByWeek(String username) {
         Map<String, Integer> sessionsPerDay = SQliteConnection.getDurationLast7Days(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
-        series.setName("This Week");
+        series.setName("Last 7 Days");
 
         LocalDate today = LocalDate.now();
+        List<String> dayLabels = new ArrayList<>();
+
         for (int i = 6; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
             String dbKey = date.toString();  // e.g., "2025-07-15"
             String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Mon", etc.
+            dayLabels.add(dayOfWeek);
 
             int count = sessionsPerDay.getOrDefault(dbKey, 0); // use 0 if not found
             series.getData().add(new XYChart.Data<>(dayOfWeek, count));
@@ -116,6 +141,60 @@ public class Productivity implements Initializable {
 
         durationChart.getData().clear();
         durationChart.getData().add(series);
+
+        resetDurationAxis("Day", dayLabels, 90);
+    }
+
+    public void updateDurationChartByMonth(String username) {
+        Map<String, Integer> sessionsPerDay = SQliteConnection.getDurationLast30Days(username);
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        series.setName("Last 30 Days");
+
+        LocalDate today = LocalDate.now();
+        List<String> days = new ArrayList<>();
+        for (int i = 29; i >= 0; i--) {
+            LocalDate date = today.minusDays(i);
+            String dbKey = date.toString();  // e.g., "2025-07-15"
+            String day = date.getDayOfMonth() + "/" + date.getMonthValue();
+            days.add(day);
+
+            int count = sessionsPerDay.getOrDefault(dbKey, 0); // use 0 if not found
+            series.getData().add(new XYChart.Data<>(day, count));
+        }
+
+        durationChart.getData().clear();
+        durationChart.getData().add(series);
+
+        resetDurationAxis("Days", days, 90);
+    }
+
+    public void updateDurationChartByYear(String username) {
+        Map<String, Integer> sessionsPerMonth = SQliteConnection.getDurationThisYearByMonth(username);
+        XYChart.Series<String, Integer> series = new XYChart.Series<>();
+        series.setName("This Year");
+
+        List<String> months = new ArrayList<>();
+        for (int month = 1; month <= 12; month++) {
+            String monthStr = String.format("%d-%02d", Year.now().getValue(), month);  // e.g., "2025-07"
+            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // e.g., "Jul"
+            months.add(label);
+
+            int count = sessionsPerMonth.getOrDefault(monthStr, 0);
+            series.getData().add(new XYChart.Data<>(label, count));
+        }
+
+        durationChart.getData().clear();
+        durationChart.getData().add(series);
+
+        resetDurationAxis("Months", months, 90);
+    }
+
+    private void resetDurationAxis(String label, List<String> categories, int rotation) {
+        durationxAxis.setLabel(label);
+        durationxAxis.getCategories().clear();
+        durationxAxis.setTickLabelRotation(rotation);
+        durationxAxis.setCategories(FXCollections.observableArrayList(categories));
+        durationChart.layout(); // force redraw
     }
 
 

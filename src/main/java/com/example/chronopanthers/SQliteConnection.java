@@ -155,6 +155,33 @@ public class SQliteConnection {
         try (Connection conn = connector();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("day"), rs.getInt("total_duration"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static Map<String, Integer> getDurationLast30Days(String username) {
+        String sql = """
+        SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, SUM(duration) AS total_duration
+        FROM sessionslog
+        WHERE session_type = 'work'
+          AND username = ?
+          AND created_at >= CURRENT_DATE - INTERVAL '29 days'
+        GROUP BY day
+        ORDER BY day;
+        """;
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = connector();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
@@ -167,6 +194,35 @@ public class SQliteConnection {
 
         return result;
     }
+
+    public static Map<String, Integer> getDurationThisYearByMonth(String username) {
+        String sql = """
+        SELECT TO_CHAR(created_at, 'YYYY-MM') AS month, SUM(duration) AS total_duration
+        FROM sessionslog
+        WHERE session_type = 'work'
+          AND username = ?
+          AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+        GROUP BY month
+        ORDER BY month;
+        """;
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = connector();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("month"), rs.getInt("total_duration"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 
     // Additional method to test connection
     public static boolean testConnection() {

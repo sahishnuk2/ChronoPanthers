@@ -5,7 +5,9 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="720.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Productivity">
@@ -43,9 +45,9 @@
             </BarChart>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="300.0" layoutY="290.0" prefHeight="291.0" prefWidth="286.0">
+      <AnchorPane layoutX="285.0" layoutY="290.0" prefHeight="315.0" prefWidth="314.0">
          <children>
-            <BarChart fx:id="durationChart" layoutX="6.0" layoutY="14.0" prefHeight="236.0" prefWidth="260.0" title="Duration">
+            <BarChart fx:id="durationChart" layoutX="-3.0" layoutY="14.0" prefHeight="236.0" prefWidth="314.0" title="Duration">
                <xAxis>
                   <CategoryAxis fx:id="durationxAxis" side="BOTTOM" />
                </xAxis>
@@ -55,5 +57,12 @@
             </BarChart>
          </children>
       </AnchorPane>
+      <RadioButton fx:id="weekly" layoutX="50.0" layoutY="662.0" mnemonicParsing="false" selected="true" text="Weekly">
+         <toggleGroup>
+            <ToggleGroup fx:id="statsPer" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="monthly" layoutX="124.0" layoutY="662.0" mnemonicParsing="false" text="Monthly" toggleGroup="$statsPer" />
+      <RadioButton fx:id="yearly" layoutX="199.0" layoutY="662.0" mnemonicParsing="false" text="Yearly" toggleGroup="$statsPer" />
    </children>
 </AnchorPane>
