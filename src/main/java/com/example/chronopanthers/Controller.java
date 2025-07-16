@@ -71,6 +71,15 @@ public class Controller implements Initializable {
         //progressRing.getStrokeDashArray().add(0.1);
         //progressRing.getStrokeDashArray().add(600.0);
 
+        workTime = TimerState.workTime;
+        breakTime = TimerState.breakTime;
+        timeLeft = TimerState.timeLeft;
+        isWorkTime = TimerState.isWorkTime;
+        running = TimerState.isRunning;
+
+        updateDisplay();
+        updateProgressRing();
+
         //Timeline
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             timeLeft--;
@@ -226,11 +235,34 @@ public class Controller implements Initializable {
         }
     }
 
+    public void saveTimerStateToGlobal() {
+        TimerState.workTime = workTime;
+        TimerState.breakTime = breakTime;
+        TimerState.timeLeft = timeLeft;
+        TimerState.isWorkTime = isWorkTime;
+        TimerState.isRunning = running;
+//        TimerState.workSessions = workSessions;
+//        TimerState.breakSessions = breakSessions;
+    }
+
+    private void switchScene() {
+        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
+            timeline.pause();  // or timeline.pause();
+            running = false;
+        }
+    }
+
     private Stage stage;
     private Scene scene;
 
 
+
+
     public void logout(ActionEvent event) throws IOException {
+        switchScene();
+        saveTimerStateToGlobal();
+
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
@@ -250,6 +282,9 @@ public class Controller implements Initializable {
 
     public void taskManager(ActionEvent event) throws IOException {
         // Load TaskManager with current user context
+        switchScene();
+        saveTimerStateToGlobal();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
         Parent root = loader.load();
 
@@ -270,6 +305,9 @@ public class Controller implements Initializable {
 
     @FXML
     public void aiAgent(ActionEvent event) throws IOException {
+        switchScene();
+        saveTimerStateToGlobal();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
         Parent root = loader.load();
 
@@ -288,7 +326,10 @@ public class Controller implements Initializable {
     }
 
     public void productivity(ActionEvent event) throws IOException {
-        // Load TaskManager with current user context
+        // Load stats with current user context
+        switchScene();
+        saveTimerStateToGlobal();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
         Parent root = loader.load();
 
