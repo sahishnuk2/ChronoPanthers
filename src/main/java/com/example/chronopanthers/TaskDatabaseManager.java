@@ -283,5 +283,63 @@ public class TaskDatabaseManager {
         return result;
 
     }
+
+    public static Map<String, Integer> getTasksCompletedLast30Days(String username) {
+        String sql = """
+            SELECT TO_CHAR(updated_at, 'YYYY-MM-DD') AS day, COUNT(*) AS task_count
+            FROM tasks
+            WHERE is_completed = TRUE
+              AND username = ?
+              AND updated_at >= CURRENT_DATE - INTERVAL '29 days'
+            GROUP BY day
+            ORDER BY day;
+        """;
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("day"), rs.getInt("task_count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
+
+    public static Map<String, Integer> getTasksCompletedThisYearByMonth(String username) {
+        String sql = """
+        SELECT TO_CHAR(updated_at, 'YYYY-MM') AS month, COUNT(*) AS task_count
+        FROM tasks
+        WHERE is_completed = TRUE
+          AND username = ?
+          AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+        GROUP BY month
+        ORDER BY month;
+        """;
+
+        Map<String, Integer> result = new LinkedHashMap<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.put(rs.getString("month"), rs.getInt("task_count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 }
 
