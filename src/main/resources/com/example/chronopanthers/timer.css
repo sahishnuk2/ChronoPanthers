@@ -1,3 +1,4 @@
+@import "common.css";
 .button.controls {
     -fx-font-size: 16px;
     -fx-min-width: 45px;

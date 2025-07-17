@@ -42,6 +42,8 @@ public class Controller implements Initializable {
     private VBox timeBox;
     @FXML
     private Label titleLabel;
+    @FXML
+    private NavigationController navigationBarController;
 
     private String currentUsername;
 
@@ -177,6 +179,10 @@ public class Controller implements Initializable {
         // Set personalized title
         if (titleLabel != null) {
             titleLabel.setText("Let's Pomodoro, " + username);
+        }
+
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(username);
         }
 
         // Load existing session counts from database

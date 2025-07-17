@@ -19,21 +19,12 @@
     <top>
         <VBox styleClass="header-section">
             <children>
-                <!-- Header with user info and navigation -->
+                <fx:include fx:id="navigationBar" source="navigationBar.fxml" />
                 <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="top-bar">
                     <children>
                         <Label fx:id="usernameLabel" styleClass="username-label" text="Study AI Assistant" />
                         <Region HBox.hgrow="ALWAYS" />
                         <Label fx:id="statusLabel" styleClass="status-label" text="Ready" />
-                        <MenuButton styleClass="menu-button" text="Menu">
-                            <items>
-                                <MenuItem onAction="#goToTimer" text="🍅 Pomodoro Timer" />
-                                <MenuItem onAction="#goToTaskManager" text="📋 Task Manager" />
-                        <MenuItem mnemonicParsing="false" onAction="#goToStats" text="Statistics" />
-                                <SeparatorMenuItem />
-                                <MenuItem onAction="#logout" text="🚪 Logout" />
-                            </items>
-                        </MenuButton>
                     </children>
                     <padding>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />

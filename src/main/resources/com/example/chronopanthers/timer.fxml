@@ -12,8 +12,12 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Controller">
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Controller">
    <children>
+      <fx:include fx:id="navigationBar" source="navigationBar.fxml" />
+
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="600.0">
+         <children>
       <VBox fx:id="timeBox" layoutX="109.0" layoutY="81.0" prefHeight="224.0" prefWidth="393.0">
          <children>
             <AnchorPane prefHeight="220.0" prefWidth="393.0">
@@ -80,17 +84,7 @@
             <Button fx:id="resetButton" alignment="CENTER" mnemonicParsing="false" onAction="#reset" styleClass="controls" text="↻" />
          </children>
       </HBox>
-      <MenuBar prefHeight="28.0" prefWidth="600.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-                  <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Log Out" />
-                  <MenuItem fx:id="taskManager" mnemonicParsing="false" onAction="#taskManager" text="Task Manager" />
-                  <MenuItem mnemonicParsing="false" onAction="#productivity" text="Statistics" />
-                  <MenuItem mnemonicParsing="false" onAction="#aiAgent" text="🤖 AI Study Assistant" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</VBox>

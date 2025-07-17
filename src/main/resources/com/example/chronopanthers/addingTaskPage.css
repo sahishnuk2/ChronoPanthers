@@ -1,3 +1,4 @@
+@import "common.css";
 .button {
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;

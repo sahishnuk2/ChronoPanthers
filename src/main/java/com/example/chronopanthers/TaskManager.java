@@ -58,6 +58,8 @@ public class TaskManager implements Initializable {
     private ComboBox<String> typeFilter;
     @FXML
     private ComboBox<Task.Priority> priorityFilter;
+    @FXML
+    private NavigationController navigationBarController;
 
     private ObservableList<Task> tasks = FXCollections.observableArrayList();
     private String currentUsername;
@@ -141,6 +143,10 @@ public class TaskManager implements Initializable {
         this.currentUsername = username;
         updateLabels();
         loadUserTasks();
+
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(username);
+        }
     }
 
     private void updateLabels() {

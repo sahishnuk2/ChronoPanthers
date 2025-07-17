@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.NavigationController" style="-fx-background-color: #4a90e2; -fx-padding: 8px;" prefHeight="40.0" prefWidth="600.0" maxWidth="600.0">
+    <children>
+        <!-- App Title -->
+        <Label text="🍅 CP" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;">
+            <HBox.margin>
+                <Insets right="10.0" />
+            </HBox.margin>
+        </Label>
+
+        <!-- Navigation Buttons -->
+        <HBox spacing="3.0" HBox.hgrow="ALWAYS">
+            <children>
+                <Button onAction="#goToTimer" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 3px; -fx-background-radius: 3px; -fx-padding: 4 6; -fx-font-size: 11px;" text="🍅 Timer" />
+                <Button onAction="#goToTaskManager" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 3px; -fx-background-radius: 3px; -fx-padding: 4 6; -fx-font-size: 11px;" text="📋 Tasks" />
+                <Button onAction="#goToAIAgent" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 3px; -fx-background-radius: 3px; -fx-padding: 4 6; -fx-font-size: 11px;" text="🤖 AI" />
+                <Button onAction="#goToStats" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 3px; -fx-background-radius: 3px; -fx-padding: 4 6; -fx-font-size: 11px;" text="📊 Stats" />
+            </children>
+        </HBox>
+
+        <!-- User info and logout -->
+        <HBox spacing="5.0" alignment="CENTER_RIGHT">
+            <children>
+                <Label fx:id="usernameLabel" style="-fx-text-fill: white; -fx-font-size: 11px;" text="shawn" />
+                <Button onAction="#logout" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-border-radius: 3px; -fx-background-radius: 3px; -fx-padding: 4 6; -fx-font-size: 11px;" text="🚪" />
+            </children>
+        </HBox>
+    </children>
+</HBox>

@@ -40,6 +40,8 @@ public class AIAgentController implements Initializable {
     private ProgressIndicator loadingIndicator;
     @FXML
     private ScrollPane chatScrollPane;
+    @FXML
+    private NavigationController navigationBarController;
 
     private String currentUsername;
     private AIService aiService;
@@ -131,6 +133,10 @@ public class AIAgentController implements Initializable {
         this.currentUsername = username;
         if (usernameLabel != null) {
             usernameLabel.setText("Study AI for: " + username);
+        }
+
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(username);
         }
 
         // Load user's tasks for analysis

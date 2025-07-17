@@ -1,70 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.collections.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Productivity">
-   <children>
-      <AnchorPane fx:id="barChartPane" layoutX="2.0" layoutY="31.0" prefHeight="291.0" prefWidth="324.0">
-         <children>
-            <BarChart fx:id="taskChart" layoutY="28.0" prefHeight="236.0" prefWidth="324.0" title="Tasks">
-              <xAxis>
-                <CategoryAxis fx:id="taskxAxis" side="BOTTOM" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis fx:id="taskyAxis" side="LEFT" />
-              </yAxis>
-            </BarChart>
-         </children>
-      </AnchorPane>
-      <MenuButton layoutX="512.0" layoutY="18.0" mnemonicParsing="false" text="Menu">
-        <items>
-          <MenuItem mnemonicParsing="false" onAction="#Timer" text="🍅 Pomodoro Timer" />
-          <MenuItem mnemonicParsing="false" onAction="#TaskManager" text="📋 Task Manager" />
-            <MenuItem mnemonicParsing="false" onAction="#AIAgent" text="Study AI Assistant" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#logout" text="🚪 Logout" />
-        </items>
-      </MenuButton>
-      <AnchorPane layoutX="-6.0" layoutY="290.0" prefHeight="291.0" prefWidth="314.0">
-         <children>
-            <BarChart fx:id="workSessionsChart" layoutY="14.0" prefHeight="236.0" prefWidth="314.0" title="WS">
-              <xAxis>
-                <CategoryAxis fx:id="workSessxAxis" side="BOTTOM" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis fx:id="workSessyAxis" side="LEFT" />
-              </yAxis>
-            </BarChart>
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="285.0" layoutY="290.0" prefHeight="315.0" prefWidth="314.0">
-         <children>
-            <BarChart fx:id="durationChart" layoutX="-3.0" layoutY="14.0" prefHeight="236.0" prefWidth="314.0" title="Duration">
-               <xAxis>
-                  <CategoryAxis fx:id="durationxAxis" side="BOTTOM" />
-               </xAxis>
-               <yAxis>
-                  <NumberAxis fx:id="durationyAxis" side="LEFT" />
-               </yAxis>
-            </BarChart>
-         </children>
-      </AnchorPane>
-      <RadioButton fx:id="weekly" layoutX="50.0" layoutY="662.0" mnemonicParsing="false" selected="true" text="Weekly">
-         <toggleGroup>
-            <ToggleGroup fx:id="statsPer" />
-         </toggleGroup>
-      </RadioButton>
-      <RadioButton fx:id="monthly" layoutX="124.0" layoutY="662.0" mnemonicParsing="false" text="Monthly" toggleGroup="$statsPer" />
-      <RadioButton fx:id="yearly" layoutX="199.0" layoutY="662.0" mnemonicParsing="false" text="Yearly" toggleGroup="$statsPer" />
-      <PieChart fx:id="durationPieChart" layoutX="336.0" layoutY="77.0" prefHeight="213.0" prefWidth="234.0" />
-   </children>
-</AnchorPane>
+<VBox xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.Productivity">
+    <children>
+        <!-- Navigation Bar -->
+        <fx:include fx:id="navigationBar" source="navigationBar.fxml" />
+
+        <!-- Original Content wrapped in AnchorPane to maintain layout -->
+        <AnchorPane prefHeight="720.0" prefWidth="600.0">
+            <children>
+                <!-- Header -->
+                <Label alignment="CENTER" layoutX="150.0" layoutY="14.0" prefHeight="35.0" prefWidth="300.0" text="📊 Productivity Statistics">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+
+                <!-- Time Period Selection -->
+                <HBox layoutX="200.0" layoutY="60.0" spacing="10.0">
+                    <children>
+                        <RadioButton fx:id="weekly" selected="true" text="Weekly" toggleGroup="$statsPer" />
+                        <RadioButton fx:id="monthly" text="Monthly" toggleGroup="$statsPer" />
+                        <RadioButton fx:id="yearly" text="Yearly" toggleGroup="$statsPer" />
+                    </children>
+                </HBox>
+
+                <!-- Charts in 2x2 Grid -->
+                <GridPane layoutX="20.0" layoutY="100.0" prefHeight="580.0" prefWidth="560.0" hgap="20.0" vgap="20.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <!-- Tasks Chart -->
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <children>
+                                <Label text="✅ Tasks Completed" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                                <BarChart fx:id="taskChart" prefHeight="250.0" prefWidth="250.0">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="taskxAxis" side="BOTTOM" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="taskyAxis" side="LEFT" />
+                                    </yAxis>
+                                </BarChart>
+                            </children>
+                        </VBox>
+
+                        <!-- Work Sessions Chart -->
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <children>
+                                <Label text="🍅 Work Sessions" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                                <BarChart fx:id="workSessionsChart" prefHeight="250.0" prefWidth="250.0">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="workSessxAxis" side="BOTTOM" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="workSessyAxis" side="LEFT" />
+                                    </yAxis>
+                                </BarChart>
+                            </children>
+                        </VBox>
+
+                        <!-- Duration Chart -->
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <children>
+                                <Label text="⏱️ Study Duration" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                                <BarChart fx:id="durationChart" prefHeight="250.0" prefWidth="250.0">
+                                    <xAxis>
+                                        <CategoryAxis fx:id="durationxAxis" side="BOTTOM" />
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="durationyAxis" side="LEFT" />
+                                    </yAxis>
+                                </BarChart>
+                            </children>
+                        </VBox>
+
+                        <!-- Pie Chart -->
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <children>
+                                <Label text="⚖️ Work vs Break Balance" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                                <PieChart fx:id="durationPieChart" prefHeight="250.0" prefWidth="250.0" />
+                            </children>
+                        </VBox>
+                    </children>
+                </GridPane>
+            </children>
+        </AnchorPane>
+    </children>
+
+    <!-- ToggleGroup Definition -->
+    <fx:define>
+        <ToggleGroup fx:id="statsPer" />
+    </fx:define>
+</VBox>

@@ -33,6 +33,8 @@ public class Productivity implements Initializable {
     private RadioButton weekly, monthly, yearly;
     @FXML
     private PieChart durationPieChart;
+    @FXML
+    private NavigationController navigationBarController;
 
     private String currentUsername;
 
@@ -55,11 +57,17 @@ public class Productivity implements Initializable {
                 loadYearlyChart();
             }
         });
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(currentUsername);
+        }
 
     }
 
     public void setCurrentUsername(String username) {
         this.currentUsername = username;
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(username);
+        }
         loadWeeklyChart();
     }
 
