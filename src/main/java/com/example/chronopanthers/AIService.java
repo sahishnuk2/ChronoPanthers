@@ -295,7 +295,9 @@ public class AIService {
                         "TASK SUGGESTIONS:\n" +
                         "- When you suggest tasks during planning, always ask:\n" +
                         "  'Would you like me to add any of these tasks to your Task Manager?'\n" +
-                        "- Encourage users to confirm with: 'yes, add [task name] by [date]'\n\n" +
+                        "- For deadline tasks: 'add task: [task name], [date]'\n" +
+                        "- For normal tasks: 'add task: [task name]'\n" +
+                        "- Example: 'add task: Math Assignment, July 2 2025' or 'add task: Review notes'\n\n" +
 
                         "ALWAYS CONSIDER:\n" +
                         "- Their current task load and priorities\n" +
@@ -351,48 +353,79 @@ public class AIService {
     }
 
     private TaskAddResult checkAndAddTask(String userMessage, String username) {
-        // Pattern to match: "add task: [task name], [date]"
-        Pattern pattern = Pattern.compile("add task:\\s*([^,]+),\\s*(.+)", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(userMessage.trim());
+        // Pattern to match: "add task: [task name]" with optional date
+        Pattern patternWithDate = Pattern.compile("add task:\\s*([^,]+),\\s*(.+)", Pattern.CASE_INSENSITIVE);
+        Pattern patternWithoutDate = Pattern.compile("add task:\\s*(.+)", Pattern.CASE_INSENSITIVE);
 
-        if (!matcher.matches()) {
+        Matcher matcherWithDate = patternWithDate.matcher(userMessage.trim());
+        Matcher matcherWithoutDate = patternWithoutDate.matcher(userMessage.trim());
+
+        String taskName;
+        LocalDate deadline = null;
+        Task.Priority priority;
+        Task newTask;
+
+        if (matcherWithDate.matches()) {
+            // Format: "add task: [task name], [date]"
+            taskName = matcherWithDate.group(1).trim();
+            String dateString = matcherWithDate.group(2).trim();
+
+            // Try to parse the date
+            deadline = parseDate(dateString);
+            if (deadline == null) {
+                return new TaskAddResult(true,
+                        "❌ I couldn't parse the date '" + dateString + "'. Please use formats like:\n" +
+                                "• 2 July 2025\n" +
+                                "• July 2, 2025\n" +
+                                "• 2025-07-02\n" +
+                                "• 02/07/2025\n\n" +
+                                "Or just use 'add task: [task name]' for a normal task without deadline.");
+            }
+
+            // Calculate priority based on deadline proximity
+            priority = calculatePriorityFromDeadline(deadline);
+            newTask = new DeadlineTask(taskName, deadline, priority);
+
+        } else if (matcherWithoutDate.matches()) {
+            // Format: "add task: [task name]" (no date)
+            taskName = matcherWithoutDate.group(1).trim();
+
+            // Create normal task with default priority
+            priority = Task.Priority.MEDIUM; // Default priority for normal tasks
+            newTask = new NormalTask(taskName, priority);
+
+        } else {
+            // No match for either pattern
             return new TaskAddResult(false, "");
         }
 
-        String taskName = matcher.group(1).trim();
-        String dateString = matcher.group(2).trim();
-
-        // Parse the date
-        LocalDate deadline = parseDate(dateString);
-        if (deadline == null) {
-            return new TaskAddResult(true,
-                    "❌ I couldn't parse the date '" + dateString + "'. Please use formats like:\n" +
-                            "• 2 July 2025\n" +
-                            "• July 2, 2025\n" +
-                            "• 2025-07-02\n" +
-                            "• 02/07/2025\n\n" +
-                            "Example: add task: Math Assignment, July 2 2025");
-        }
-
-        // Calculate priority based on deadline proximity
-        Task.Priority priority = calculatePriorityFromDeadline(deadline);
-
-        // Create and add the task
-        Task newTask = new DeadlineTask(taskName, deadline, priority);
+        // Add the task to database
         boolean success = TaskDatabaseManager.addTask(username, newTask);
 
         if (success) {
-            long daysUntilDue = ChronoUnit.DAYS.between(LocalDate.now(), deadline);
-            String urgencyText = getUrgencyText(daysUntilDue);
+            if (deadline != null) {
+                // Deadline task success message
+                long daysUntilDue = ChronoUnit.DAYS.between(LocalDate.now(), deadline);
+                String urgencyText = getUrgencyText(daysUntilDue);
 
-            return new TaskAddResult(true,
-                    "✅ **Task Added Successfully!**\n\n" +
-                            "📋 **Task Details:**\n" +
-                            "• **Name:** " + taskName + "\n" +
-                            "• **Deadline:** " + deadline.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")) + "\n" +
-                            "• **Priority:** " + priority + " " + urgencyText + "\n" +
-                            "• **Days until due:** " + daysUntilDue + " days\n\n" +
-                            "The task has been added to your Task Manager successfully! 🎯");
+                return new TaskAddResult(true,
+                        "✅ **Deadline Task Added Successfully!**\n\n" +
+                                "📋 **Task Details:**\n" +
+                                "• **Name:** " + taskName + "\n" +
+                                "• **Deadline:** " + deadline.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")) + "\n" +
+                                "• **Priority:** " + priority + " " + urgencyText + "\n" +
+                                "• **Days until due:** " + daysUntilDue + " days\n\n" +
+                                "The deadline task has been added to your Task Manager successfully! 🎯");
+            } else {
+                // Normal task success message
+                return new TaskAddResult(true,
+                        "✅ **Normal Task Added Successfully!**\n\n" +
+                                "📋 **Task Details:**\n" +
+                                "• **Name:** " + taskName + "\n" +
+                                "• **Type:** Normal Task (no deadline)\n" +
+                                "• **Priority:** " + priority + "\n\n" +
+                                "The task has been added to your Task Manager successfully! 📝");
+            }
         } else {
             return new TaskAddResult(true,
                     "❌ **Failed to Add Task**\n\n" +
