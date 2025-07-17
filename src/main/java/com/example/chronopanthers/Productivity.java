@@ -40,7 +40,7 @@ public class Productivity implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//         Initialise to weekly at first
+        // Initialize axis labels
         taskxAxis.setLabel("Day");
         taskyAxis.setLabel("Task Completed");
         workSessxAxis.setLabel("Day");
@@ -48,6 +48,20 @@ public class Productivity implements Initializable {
         durationxAxis.setLabel("Day");
         durationyAxis.setLabel("Duration/min");
 
+        // Manually connect radio buttons to toggle group (fix for new FXML structure)
+        weekly.setToggleGroup(statsPer);
+        monthly.setToggleGroup(statsPer);
+        yearly.setToggleGroup(statsPer);
+
+        // Set default selection
+        weekly.setSelected(true);
+
+        // Initialize navigation
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(currentUsername);
+        }
+
+        // Add listener for toggle group changes
         statsPer.selectedToggleProperty().addListener((obs, oldValue, newValue) -> {
             if (weekly.isSelected()) {
                 loadWeeklyChart();
@@ -57,10 +71,6 @@ public class Productivity implements Initializable {
                 loadYearlyChart();
             }
         });
-        if (navigationBarController != null) {
-            navigationBarController.setCurrentUser(currentUsername);
-        }
-
     }
 
     public void setCurrentUsername(String username) {
@@ -152,8 +162,8 @@ public class Productivity implements Initializable {
             series.getData().add(new XYChart.Data<>(label, count));
         }
 
-        durationChart.getData().clear();
-        durationChart.getData().add(series);
+        taskChart.getData().clear(); // Fix: was updating wrong chart
+        taskChart.getData().add(series);
 
         resetTaskAxis("Months", months, 90);
     }
@@ -360,23 +370,18 @@ public class Productivity implements Initializable {
         taskChart.layout(); // force redraw
     }
 
-
-
+    // Remove old navigation methods since they're now handled by NavigationController
+    // Keep only these if you need them for backward compatibility:
     private Stage stage;
     private Scene scene;
 
     public void Timer(ActionEvent event) throws IOException {
-        // Load Timer with current user context
         FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
         Parent root = loader.load();
-
-        // Get the TaskManager controller and set the current user
         Controller controller = loader.getController();
-        //controller.setCurrentUser(currentUsername);
         if (currentUsername != null) {
             controller.setCurrentUser(currentUsername);
         }
-
         stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
@@ -387,17 +392,12 @@ public class Productivity implements Initializable {
     }
 
     public void TaskManager(ActionEvent event) throws IOException {
-        // Load TaskManager with current user context
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
         Parent root = loader.load();
-
-        // Get the TaskManager controller and set the current user
         TaskManager controller = loader.getController();
-        //controller.setCurrentUser(currentUsername);
         if (currentUsername != null) {
             controller.setCurrentUser(currentUsername);
         }
-
         stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
@@ -408,17 +408,12 @@ public class Productivity implements Initializable {
     }
 
     public void AIAgent(ActionEvent event) throws IOException {
-        // Load AI Assist with current user context
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AIAgent.fxml"));
         Parent root = loader.load();
-
-        // Get the TaskManager controller and set the current user
         AIAgentController controller = loader.getController();
-        //controller.setCurrentUser(currentUsername);
         if (currentUsername != null) {
             controller.setCurrentUser(currentUsername);
         }
-
         stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/AIAgent.css").toExternalForm());
