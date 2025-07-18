@@ -20,6 +20,8 @@ public class NavigationController {
 
     private String currentUsername;
 
+    private Stage stage;
+
     public void setCurrentUser(String username) {
         this.currentUsername = username;
         if (usernameLabel != null) {
@@ -117,5 +119,38 @@ public class NavigationController {
             return (Stage) node.getScene().getWindow();
         }
         throw new IllegalArgumentException("Unable to determine stage from event source: " + source.getClass());
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        this.stage.setOnCloseRequest(event -> {
+            event.consume(); // prevent window from closing
+            handleLogoutRequest(); // show the confirmation dialog
+        });
+    }
+
+    private void handleLogoutRequest() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout");
+        alert.setHeaderText("You're about to logout!");
+        alert.setContentText("Have you completed all your work?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            TimerManager.getInstance().reset();
+
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
+
+                stage.setTitle("Login Page");
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

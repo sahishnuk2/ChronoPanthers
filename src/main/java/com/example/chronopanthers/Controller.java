@@ -29,8 +29,6 @@ import static com.example.chronopanthers.SQliteConnection.*;
 
 public class Controller implements Initializable {
     @FXML
-    private ProgressBar progressBar;
-    @FXML
     private Spinner<Integer> workDurationInput, breakDurationInput;
     @FXML
     private Button playButton, pauseButton, resetButton, applySettingsButton;
@@ -42,196 +40,85 @@ public class Controller implements Initializable {
     private VBox timeBox;
     @FXML
     private Label titleLabel;
-    @FXML
-    private NavigationController navigationBarController;
 
     private String currentUsername;
-
-    private double progress;
-    private int workTime = 25 * 60;
-    private int breakTime = 5 * 60;
-    private int timeLeft = workTime;
-    private boolean running = false;
-    private boolean isWorkTime = true;
     private int workSessions = 0;
     private int breakSessions = 0;
     private Timeline timeline;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //Spinners
-        SpinnerValueFactory<Integer> valueFactoryWork =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60);
-        valueFactoryWork.setValue(25);
-        workDurationInput.setValueFactory(valueFactoryWork);
+        TimerManager manager = TimerManager.getInstance();
 
-        SpinnerValueFactory<Integer> valueFactoryBreak =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30);
-        valueFactoryBreak.setValue(5);
+        // Set up duration spinners
+        SpinnerValueFactory<Integer> valueFactoryWork = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60, manager.workTime / 60);
+        SpinnerValueFactory<Integer> valueFactoryBreak = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, manager.breakTime / 60);
+        workDurationInput.setValueFactory(valueFactoryWork);
         breakDurationInput.setValueFactory(valueFactoryBreak);
 
-        //progressRing.getStrokeDashArray().add(0.1);
-        //progressRing.getStrokeDashArray().add(600.0);
+        // UI update on each tick
+        manager.setOnTick(() -> {
+            updateDisplay(manager.timeLeft);
+            updateProgressRing(manager);
+        });
 
-        workTime = TimerState.workTime;
-        breakTime = TimerState.breakTime;
-        timeLeft = TimerState.timeLeft;
-        isWorkTime = TimerState.isWorkTime;
-        running = TimerState.isRunning;
-
-        updateDisplay();
-        updateProgressRing();
-
-        //Timeline
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            timeLeft--;
-
-            if (timeLeft < 0) {
-                // Time's up - switch modes
-                if (isWorkTime) {
-                    // Work session completed
-                    isWorkTime = false;
-                    timeLeft = breakTime;
-                    workSessions++;
-                    workSessionsDisplay.setText(String.valueOf(workSessions));
-                    if (currentUsername != null) {
-                        SQliteConnection.updateWorkSession(currentUsername);
-                        SQliteConnection.logWorkSession(currentUsername, workTime / 60);
-                        System.out.println("Work session completed and saved to database");
-                    }
-
-                    // Show notification
-                    System.out.println("Break time! Time to relax for a few minutes.");
-
-                    // Update UI for break mode
-                    timerState.setText("Break Time");
-                    timerState.setTextFill(Color.web("#10b981"));
-                    timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0fdf4"), new CornerRadii(16), Insets.EMPTY)));
-                    progressRing.setStroke(Color.web("#10b981"));
-                } else {
-                    // Break session completed
-                    isWorkTime = true;
-                    timeLeft = workTime;
-                    breakSessions++;
-                    breakSessionsDisplay.setText(String.valueOf(breakSessions));
-                    if (currentUsername != null) {
-                        SQliteConnection.updateBreakSession(currentUsername);
-                        SQliteConnection.logBreakSession(currentUsername, breakTime / 60);
-                        System.out.println("Break session completed and saved to database");
-                    }
-
-                    // Show notification
-                    System.out.println("Back to work! Focus on your next task.");
-
-                    // Update UI for work mode
-                    timerState.setText("Work Time");
-                    timerState.setTextFill(Color.web("#3b82f6"));
-                    timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
-                    progressRing.setStroke(Color.web("#3b82f6"));
+        // Update mode UI on session switch
+        manager.setOnModeSwitch(() -> {
+            if (manager.isWorkTime) {
+                timerState.setText("Work Time");
+                timerState.setTextFill(Color.web("#3b82f6"));
+                timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
+                progressRing.setStroke(Color.web("#3b82f6"));
+                breakSessions++;
+                breakSessionsDisplay.setText(String.valueOf(breakSessions));
+                if (currentUsername != null) {
+                    updateBreakSession(currentUsername);
+                    logBreakSession(currentUsername, manager.breakTime / 60);
                 }
-
-                // Play sound
-                java.awt.Toolkit.getDefaultToolkit().beep();
+            } else {
+                timerState.setText("Break Time");
+                timerState.setTextFill(Color.web("#10b981"));
+                timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0fdf4"), new CornerRadii(16), Insets.EMPTY)));
+                progressRing.setStroke(Color.web("#10b981"));
+                workSessions++;
+                workSessionsDisplay.setText(String.valueOf(workSessions));
+                if (currentUsername != null) {
+                    updateWorkSession(currentUsername);
+                    logWorkSession(currentUsername, manager.workTime / 60);
+                }
             }
-            updateDisplay();
-            updateProgressRing();
 
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
+            java.awt.Toolkit.getDefaultToolkit().beep(); // play sound
+        });
+
+        updateDisplay(manager.timeLeft);
+        updateProgressRing(manager);
     }
 
     public void play() {
-        if (!running) {
-            running = true;
-            timeline.play();
-            playButton.setStyle("-fx-background-color: #10b981;");
-
-        }
+        TimerManager.getInstance().start();
+        playButton.setStyle("-fx-background-color: #10b981;");
     }
 
     public void pause() {
-        if (running) {
-            timeline.pause();
-            running = false;
-            playButton.setStyle("-fx-background-color: #3b82f6;");
-        }
+        TimerManager.getInstance().pause();
+        playButton.setStyle("-fx-background-color: #3b82f6;");
     }
 
     public void reset() {
-        pause();
-        running = false;
-        isWorkTime = true;
-        timeLeft = workTime;
-        updateDisplay();
-        updateProgressRing();
-
+        TimerManager.getInstance().reset();
         timerState.setText("Work Time");
         timerState.setTextFill(Color.web("#3b82f6"));
-        //progressBar.setProgress(0.0);
         timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
         progressRing.setStroke(Color.web("#3b82f6"));
     }
 
-    public void setCurrentUser(String username) {
-        this.currentUsername = username;
-        System.out.println("Current user set to: " + username);
-
-        // Set personalized title
-        if (titleLabel != null) {
-            titleLabel.setText("Let's Pomodoro, " + username);
-        }
-
-        if (navigationBarController != null) {
-            navigationBarController.setCurrentUser(username);
-        }
-
-        // Load existing session counts from database
-        loadSessionCounts();
-    }
-
-    private void loadSessionCounts() {
-        if (currentUsername != null) {
-            int[] counts = getSessionCounts(currentUsername);
-            workSessions = counts[0];
-            breakSessions = counts[1];
-            workSessionsDisplay.setText(String.valueOf(workSessions));
-            breakSessionsDisplay.setText(String.valueOf(breakSessions));
-            System.out.println("Loaded session counts from database - Work: " + workSessions + ", Break: " + breakSessions);
-        }
-    }
-
-    public void updateDisplay() {
-        int minutes = timeLeft / 60;
-        int seconds = timeLeft % 60;
-        timerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
-
-    }
-
-    public void updateProgressRing() {
-        int totalTime = isWorkTime ? workTime : breakTime;
-        progress = (double) (totalTime - timeLeft) / totalTime;
-
-        double circumference = 2 * Math.PI * progressRing.getRadius();
-        double visibleLength = progress * circumference;
-
-        progressRing.getStrokeDashArray().clear();
-        progressRing.getStrokeDashArray().addAll(visibleLength, circumference);
-
-        //progressRing.getStrokeDashArray().setAll(circumference, circumference);
-        //progressRing.setStrokeDashOffset(circumference * (1.0 - progress));
-
-        progressRing.setRotate(90);
-
-    }
-
     public void applySettings() {
-        if (!running) {
-            workTime = workDurationInput.getValue() * 60;
-            breakTime = breakDurationInput.getValue() * 60;
-            timeLeft = workTime;
-            //timerDisplay.setText(Integer.toString(workTime) + ":00");
-            updateDisplay();
-            updateProgressRing();
+        TimerManager manager = TimerManager.getInstance();
+        if (!manager.isRunning()) {
+            manager.updateDurations(workDurationInput.getValue() * 60, breakDurationInput.getValue() * 60);
+            updateDisplay(manager.timeLeft);
+            updateProgressRing(manager);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Warning");
@@ -241,40 +128,53 @@ public class Controller implements Initializable {
         }
     }
 
-    public void saveTimerStateToGlobal() {
-        TimerState.workTime = workTime;
-        TimerState.breakTime = breakTime;
-        TimerState.timeLeft = timeLeft;
-        TimerState.isWorkTime = isWorkTime;
-        TimerState.isRunning = running;
-//        TimerState.workSessions = workSessions;
-//        TimerState.breakSessions = breakSessions;
+    public void setCurrentUser(String username) {
+        this.currentUsername = username;
+        if (titleLabel != null) {
+            titleLabel.setText("Let's Pomodoro, " + username);
+        }
+        loadSessionCounts();
     }
 
-    private void switchScene() {
-        if (timeline != null && timeline.getStatus() == Animation.Status.RUNNING) {
-            timeline.pause();  // or timeline.pause();
-            running = false;
+    private void loadSessionCounts() {
+        if (currentUsername != null) {
+            int[] counts = SQliteConnection.getSessionCounts(currentUsername);
+            workSessions = counts[0];
+            breakSessions = counts[1];
+            workSessionsDisplay.setText(String.valueOf(workSessions));
+            breakSessionsDisplay.setText(String.valueOf(breakSessions));
         }
+    }
+
+    public void updateDisplay(int timeLeft) {
+        int minutes = timeLeft / 60;
+        int seconds = timeLeft % 60;
+        timerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
+    }
+
+    public void updateProgressRing(TimerManager manager) {
+        double progress = (double) (manager.isWorkTime ? manager.workTime - manager.timeLeft : manager.breakTime - manager.timeLeft)
+                / (manager.isWorkTime ? manager.workTime : manager.breakTime);
+
+        double circumference = 2 * Math.PI * progressRing.getRadius();
+        double visibleLength = progress * circumference;
+
+        progressRing.getStrokeDashArray().clear();
+        progressRing.getStrokeDashArray().addAll(visibleLength, circumference);
+        progressRing.setRotate(90);
     }
 
     private Stage stage;
     private Scene scene;
 
-
-
-
     public void logout(ActionEvent event) throws IOException {
-        switchScene();
-        saveTimerStateToGlobal();
-
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
         alert.setContentText("Have you completed all your work?");
-
-        if(alert.showAndWait().get() == ButtonType.OK){
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            TimerManager.getInstance().reset();
             Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
             stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
             scene = new Scene(root);
@@ -287,20 +187,14 @@ public class Controller implements Initializable {
     }
 
     public void taskManager(ActionEvent event) throws IOException {
-        // Load TaskManager with current user context
-        switchScene();
-        saveTimerStateToGlobal();
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
         Parent root = loader.load();
-
-        // Get the TaskManager controller and set the current user
         TaskManager taskManagerController = loader.getController();
+        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        taskManagerController.setStage(stage);
         if (currentUsername != null) {
             taskManagerController.setCurrentUser(currentUsername);
         }
-
-        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
         stage.setTitle("Task Manager");
@@ -309,20 +203,15 @@ public class Controller implements Initializable {
         stage.show();
     }
 
-    @FXML
     public void aiAgent(ActionEvent event) throws IOException {
-        switchScene();
-        saveTimerStateToGlobal();
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
         Parent root = loader.load();
-
         AIAgentController aiController = loader.getController();
+        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        aiController.setStage(stage);
         if (currentUsername != null) {
             aiController.setCurrentUser(currentUsername);
         }
-
-        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
         stage.setTitle("AI Study Assistant");
@@ -332,26 +221,52 @@ public class Controller implements Initializable {
     }
 
     public void productivity(ActionEvent event) throws IOException {
-        // Load stats with current user context
-        switchScene();
-        saveTimerStateToGlobal();
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
         Parent root = loader.load();
-
-        // Get the TaskManager controller and set the current user
         Productivity productivity = loader.getController();
-        productivity.setCurrentUsername(currentUsername);
+        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+        productivity.setStage(stage);
         if (currentUsername != null) {
             productivity.setCurrentUsername(currentUsername);
         }
-
-        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/productivity.css").toExternalForm());
         stage.setTitle("Productivity Tracker");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+
+        this.stage.setOnCloseRequest(event -> {
+            event.consume(); // prevent window from closing
+            handleLogoutRequest(); // show the confirmation dialog
+        });
+    }
+
+    private void handleLogoutRequest() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout");
+        alert.setHeaderText("You're about to logout!");
+        alert.setContentText("Have you completed all your work?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            TimerManager.getInstance().reset();
+
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
+
+                stage.setTitle("Login Page");
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
