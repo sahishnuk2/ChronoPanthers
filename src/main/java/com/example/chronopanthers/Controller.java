@@ -40,6 +40,8 @@ public class Controller implements Initializable {
     private VBox timeBox;
     @FXML
     private Label titleLabel;
+    @FXML
+    private NavigationController navigationBarController;
 
     private String currentUsername;
     private int workSessions = 0;
@@ -130,10 +132,25 @@ public class Controller implements Initializable {
 
     public void setCurrentUser(String username) {
         this.currentUsername = username;
+        System.out.println("Controller: Setting username to: " + username);
+
         if (titleLabel != null) {
             titleLabel.setText("Let's Pomodoro, " + username);
         }
+
+        // IMPORTANT: Always set the username in the navigation controller
+        if (navigationBarController != null) {
+            navigationBarController.setCurrentUser(username);
+        }
+
         loadSessionCounts();
+    }
+
+    // Make sure this method is called after FXML injection
+    public void initializeNavigation() {
+        if (navigationBarController != null && currentUsername != null) {
+            navigationBarController.setCurrentUser(currentUsername);
+        }
     }
 
     private void loadSessionCounts() {
@@ -168,7 +185,6 @@ public class Controller implements Initializable {
     private Scene scene;
 
     public void logout(ActionEvent event) throws IOException {
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
@@ -228,6 +244,8 @@ public class Controller implements Initializable {
         productivity.setStage(stage);
         if (currentUsername != null) {
             productivity.setCurrentUsername(currentUsername);
+            // Also initialize the navigation after setting username
+            productivity.initializeNavigation();
         }
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/productivity.css").toExternalForm());

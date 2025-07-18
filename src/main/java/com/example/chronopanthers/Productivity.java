@@ -56,11 +56,6 @@ public class Productivity implements Initializable {
         // Set default selection
         weekly.setSelected(true);
 
-        // Initialize navigation
-        if (navigationBarController != null) {
-            navigationBarController.setCurrentUser(currentUsername);
-        }
-
         // Add listener for toggle group changes
         statsPer.selectedToggleProperty().addListener((obs, oldValue, newValue) -> {
             if (weekly.isSelected()) {
@@ -75,13 +70,32 @@ public class Productivity implements Initializable {
 
     public void setCurrentUsername(String username) {
         this.currentUsername = username;
+
+        // IMPORTANT: Always set the username in the navigation controller
         if (navigationBarController != null) {
             navigationBarController.setCurrentUser(username);
         }
+
+        // Load the charts with the correct username
         loadWeeklyChart();
+
+        System.out.println("Productivity: Username set to: " + username);
+    }
+
+    // Make sure this method is called after FXML injection
+    public void initializeNavigation() {
+        if (navigationBarController != null && currentUsername != null) {
+            navigationBarController.setCurrentUser(currentUsername);
+        }
     }
 
     public void loadWeeklyChart() {
+        if (currentUsername == null) {
+            System.out.println("Warning: Cannot load weekly chart - username is null");
+            return;
+        }
+
+        System.out.println("Loading weekly charts for user: " + currentUsername);
         updateTaskBarByWeek(currentUsername);
         updateWorkChartByWeek(currentUsername);
         updateDurationChartByWeek(currentUsername);
@@ -89,6 +103,12 @@ public class Productivity implements Initializable {
     }
 
     public void loadMonthlyChart() {
+        if (currentUsername == null) {
+            System.out.println("Warning: Cannot load monthly chart - username is null");
+            return;
+        }
+
+        System.out.println("Loading monthly charts for user: " + currentUsername);
         updateTaskBarByMonth(currentUsername);
         updateWorkChartByMonth(currentUsername);
         updateDurationChartByMonth(currentUsername);
@@ -96,6 +116,12 @@ public class Productivity implements Initializable {
     }
 
     public void loadYearlyChart() {
+        if (currentUsername == null) {
+            System.out.println("Warning: Cannot load yearly chart - username is null");
+            return;
+        }
+
+        System.out.println("Loading yearly charts for user: " + currentUsername);
         updateTaskBarByYear(currentUsername);
         updateWorkChartByYear(currentUsername);
         updateDurationChartByYear(currentUsername);
@@ -305,45 +331,132 @@ public class Productivity implements Initializable {
 
     // Duration Pie Chart
     public void updateSessionPieChartByWeek(String username) {
-        Map<String, Integer> durations = SQliteConnection.getTotalDurationsByType7Days(username);
-        int workDuration = durations.getOrDefault("work", 0);
-        int breakDuration = durations.getOrDefault("break", 0);
+        if (username == null || username.isEmpty()) {
+            System.out.println("Warning: Username is null or empty for pie chart update");
+            return;
+        }
 
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("Work", workDuration),
-                new PieChart.Data("Break", breakDuration)
-        );
+        try {
+            Map<String, Integer> durations = SQliteConnection.getTotalDurationsByType7Days(username);
+            if (durations == null) {
+                durations = new HashMap<>();
+            }
 
-        durationPieChart.setData(pieChartData);
-        durationPieChart.setTitle("Last 7 Days");
+            int workDuration = durations.getOrDefault("work", 0);
+            int breakDuration = durations.getOrDefault("break", 0);
+
+            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    // Create new data
+                    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+                    // Add data even if it's 0 to maintain chart structure
+                    pieChartData.add(new PieChart.Data("Work", Math.max(workDuration, 0)));
+                    pieChartData.add(new PieChart.Data("Break", Math.max(breakDuration, 0)));
+
+                    // Set the data and title
+                    durationPieChart.setData(pieChartData);
+                    durationPieChart.setTitle("Last 7 Days");
+
+                    // Force layout update
+                    durationPieChart.layout();
+
+                    System.out.println("Updated weekly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
+                } catch (Exception e) {
+                    System.err.println("Error updating pie chart UI: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Error updating weekly pie chart: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void updateSessionPieChartByMonth(String username) {
-        Map<String, Integer> durations = SQliteConnection.getTotalDurationsByType30Days(username);
-        int workDuration = durations.getOrDefault("work", 0);
-        int breakDuration = durations.getOrDefault("break", 0);
+        if (username == null || username.isEmpty()) {
+            System.out.println("Warning: Username is null or empty for pie chart update");
+            return;
+        }
 
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("Work", workDuration),
-                new PieChart.Data("Break", breakDuration)
-        );
+        try {
+            Map<String, Integer> durations = SQliteConnection.getTotalDurationsByType30Days(username);
+            if (durations == null) {
+                durations = new HashMap<>();
+            }
 
-        durationPieChart.setData(pieChartData);
-        durationPieChart.setTitle("Last 30 Days");
+            int workDuration = durations.getOrDefault("work", 0);
+            int breakDuration = durations.getOrDefault("break", 0);
+
+            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    // Create new data
+                    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+                    // Add data even if it's 0 to maintain chart structure
+                    pieChartData.add(new PieChart.Data("Work", Math.max(workDuration, 0)));
+                    pieChartData.add(new PieChart.Data("Break", Math.max(breakDuration, 0)));
+
+                    // Set the data and title
+                    durationPieChart.setData(pieChartData);
+                    durationPieChart.setTitle("Last 30 Days");
+
+                    // Force layout update
+                    durationPieChart.layout();
+
+                    System.out.println("Updated monthly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
+                } catch (Exception e) {
+                    System.err.println("Error updating pie chart UI: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Error updating monthly pie chart: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void updateSessionPieChartByYear(String username) {
-        Map<String, Integer> durations = SQliteConnection.getTotalDurationsByTypeYear(username);
-        int workDuration = durations.getOrDefault("work", 0);
-        int breakDuration = durations.getOrDefault("break", 0);
+        if (username == null || username.isEmpty()) {
+            System.out.println("Warning: Username is null or empty for pie chart update");
+            return;
+        }
 
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("Work", workDuration),
-                new PieChart.Data("Break", breakDuration)
-        );
+        try {
+            Map<String, Integer> durations = SQliteConnection.getTotalDurationsByTypeYear(username);
+            if (durations == null) {
+                durations = new HashMap<>();
+            }
 
-        durationPieChart.setData(pieChartData);
-        durationPieChart.setTitle("This Year");
+            int workDuration = durations.getOrDefault("work", 0);
+            int breakDuration = durations.getOrDefault("break", 0);
+
+            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    // Create new data
+                    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+                    // Add data even if it's 0 to maintain chart structure
+                    pieChartData.add(new PieChart.Data("Work", Math.max(workDuration, 0)));
+                    pieChartData.add(new PieChart.Data("Break", Math.max(breakDuration, 0)));
+
+                    // Set the data and title
+                    durationPieChart.setData(pieChartData);
+                    durationPieChart.setTitle("This Year");
+
+                    // Force layout update
+                    durationPieChart.layout();
+
+                    System.out.println("Updated yearly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
+                } catch (Exception e) {
+                    System.err.println("Error updating pie chart UI: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Error updating yearly pie chart: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void resetDurationAxis(String label, List<String> categories, int rotation) {
@@ -370,8 +483,7 @@ public class Productivity implements Initializable {
         taskChart.layout(); // force redraw
     }
 
-    // Remove old navigation methods since they're now handled by NavigationController
-    // Keep only these if you need them for backward compatibility:
+    // Keep only these navigation methods for backward compatibility
     private Stage stage;
     private Scene scene;
 

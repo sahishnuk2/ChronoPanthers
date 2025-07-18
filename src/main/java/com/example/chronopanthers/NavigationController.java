@@ -24,6 +24,7 @@ public class NavigationController {
 
     public void setCurrentUser(String username) {
         this.currentUsername = username;
+        System.out.println("NavigationController: Setting username to: " + username);
         if (usernameLabel != null) {
             usernameLabel.setText("Welcome, " + username);
         }
@@ -37,6 +38,8 @@ public class NavigationController {
         Controller controller = loader.getController();
         if (currentUsername != null) {
             controller.setCurrentUser(currentUsername);
+            // Also initialize the navigation after setting username
+            controller.initializeNavigation();
         }
 
         switchScene(root, "Pomodoro Timer", "/com/example/chronopanthers/timer.css", event);
@@ -76,6 +79,8 @@ public class NavigationController {
         Productivity controller = loader.getController();
         if (currentUsername != null) {
             controller.setCurrentUsername(currentUsername);
+            // Also initialize the navigation after setting username
+            controller.initializeNavigation();
         }
 
         switchScene(root, "Productivity Tracker", "/com/example/chronopanthers/productivity.css", event);
