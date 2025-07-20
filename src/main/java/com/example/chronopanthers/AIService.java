@@ -370,6 +370,18 @@ public class AIService {
             taskName = matcherWithDate.group(1).trim();
             String dateString = matcherWithDate.group(2).trim();
 
+            // Check if task already exists before parsing date
+            if (TaskDatabaseManager.taskExists(username, taskName)) {
+                return new TaskAddResult(true,
+                        "⚠️ **Task Already Exists!**\n\n" +
+                                "A task with the name '" + taskName + "' already exists in your task list.\n\n" +
+                                "**Options:**\n" +
+                                "• Use a different name for this task\n" +
+                                "• Check your Task Manager to see the existing task\n" +
+                                "• Try: 'add task: " + taskName + " (Version 2), " + dateString + "'\n\n" +
+                                "Would you like to suggest a different name for this task?");
+            }
+
             // Try to parse the date
             deadline = parseDate(dateString);
             if (deadline == null) {
@@ -389,6 +401,18 @@ public class AIService {
         } else if (matcherWithoutDate.matches()) {
             // Format: "add task: [task name]" (no date)
             taskName = matcherWithoutDate.group(1).trim();
+
+            // Check if task already exists
+            if (TaskDatabaseManager.taskExists(username, taskName)) {
+                return new TaskAddResult(true,
+                        "⚠️ **Task Already Exists!**\n\n" +
+                                "A task with the name '" + taskName + "' already exists in your task list.\n\n" +
+                                "**Options:**\n" +
+                                "• Use a different name for this task\n" +
+                                "• Check your Task Manager to see the existing task\n" +
+                                "• Try: 'add task: " + taskName + " (Version 2)'\n\n" +
+                                "Would you like to suggest a different name for this task?");
+            }
 
             // Create normal task with default priority
             priority = Task.Priority.MEDIUM; // Default priority for normal tasks
@@ -427,13 +451,22 @@ public class AIService {
                                 "The task has been added to your Task Manager successfully! 📝");
             }
         } else {
-            return new TaskAddResult(true,
-                    "❌ **Failed to Add Task**\n\n" +
-                            "I encountered an error while adding '" + taskName + "' to your task list. This might be because:\n" +
-                            "• A task with the same name already exists\n" +
-                            "• Database connection issue\n" +
-                            "• Invalid task data\n\n" +
-                            "Please try again or add the task manually through the Task Manager.");
+            // Database error - but this could also be due to task already existing
+            // Check if it's because the task already exists
+            if (TaskDatabaseManager.taskExists(username, taskName)) {
+                return new TaskAddResult(true,
+                        "⚠️ **Task Already Exists!**\n\n" +
+                                "A task with the name '" + taskName + "' already exists in your task list.\n\n" +
+                                "This might have been added recently. Please check your Task Manager or try using a different name for this task.");
+            } else {
+                return new TaskAddResult(true,
+                        "❌ **Failed to Add Task**\n\n" +
+                                "I encountered an error while adding '" + taskName + "' to your task list. This might be because:\n" +
+                                "• Database connection issue\n" +
+                                "• Invalid task data\n" +
+                                "• Server error\n\n" +
+                                "Please try again or add the task manually through the Task Manager.");
+            }
         }
     }
 

@@ -42,6 +42,9 @@ public class NavigationController {
             controller.initializeNavigation();
         }
 
+        // IMPORTANT: Activate the controller to sync UI with timer state
+        controller.onControllerActivated();
+
         switchScene(root, "Pomodoro Timer", "/com/example/chronopanthers/timer.css", event);
     }
 

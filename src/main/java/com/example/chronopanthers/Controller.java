@@ -3,6 +3,7 @@ package com.example.chronopanthers;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,6 +48,7 @@ public class Controller implements Initializable {
     private int workSessions = 0;
     private int breakSessions = 0;
     private Timeline timeline;
+    private boolean isControllerActive = true;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -60,41 +62,68 @@ public class Controller implements Initializable {
 
         // UI update on each tick
         manager.setOnTick(() -> {
-            updateDisplay(manager.timeLeft);
-            updateProgressRing(manager);
+            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
+            Platform.runLater(() -> {
+                if (isControllerActive) {
+                    updateDisplay(manager.timeLeft);
+                    updateProgressRing(manager);
+                }
+            });
         });
 
         // Update mode UI on session switch
         manager.setOnModeSwitch(() -> {
-            if (manager.isWorkTime) {
-                timerState.setText("Work Time");
-                timerState.setTextFill(Color.web("#3b82f6"));
-                timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
-                progressRing.setStroke(Color.web("#3b82f6"));
-                breakSessions++;
-                breakSessionsDisplay.setText(String.valueOf(breakSessions));
-                if (currentUsername != null) {
-                    updateBreakSession(currentUsername);
-                    logBreakSession(currentUsername, manager.breakTime / 60);
+            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
+            Platform.runLater(() -> {
+                if (isControllerActive) {
+                    updateModeUI(manager);
                 }
-            } else {
-                timerState.setText("Break Time");
-                timerState.setTextFill(Color.web("#10b981"));
-                timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0fdf4"), new CornerRadii(16), Insets.EMPTY)));
-                progressRing.setStroke(Color.web("#10b981"));
-                workSessions++;
-                workSessionsDisplay.setText(String.valueOf(workSessions));
-                if (currentUsername != null) {
-                    updateWorkSession(currentUsername);
-                    logWorkSession(currentUsername, manager.workTime / 60);
-                }
-            }
 
-            java.awt.Toolkit.getDefaultToolkit().beep(); // play sound
+                // Session counting logic (always runs, even when controller is inactive)
+                if (manager.isWorkTime) {
+                    // We just switched TO work time, meaning we completed a break session
+                    breakSessions++;
+                    if (isControllerActive) {
+                        breakSessionsDisplay.setText(String.valueOf(breakSessions));
+                    }
+                    if (currentUsername != null) {
+                        updateBreakSession(currentUsername);
+                        logBreakSession(currentUsername, manager.breakTime / 60);
+                    }
+                } else {
+                    // We just switched TO break time, meaning we completed a work session
+                    workSessions++;
+                    if (isControllerActive) {
+                        workSessionsDisplay.setText(String.valueOf(workSessions));
+                    }
+                    if (currentUsername != null) {
+                        updateWorkSession(currentUsername);
+                        logWorkSession(currentUsername, manager.workTime / 60);
+                    }
+                }
+            });
         });
 
+        // Initial UI update
         updateDisplay(manager.timeLeft);
         updateProgressRing(manager);
+        updateModeUI(manager);
+    }
+
+    private void updateModeUI(TimerManager manager) {
+        if (manager.isWorkTime) {
+            timerState.setText("Work Time");
+            timerState.setTextFill(Color.web("#3b82f6"));
+            timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
+            progressRing.setStroke(Color.web("#3b82f6"));
+        } else {
+            timerState.setText("Break Time");
+            timerState.setTextFill(Color.web("#10b981"));
+            timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0fdf4"), new CornerRadii(16), Insets.EMPTY)));
+            progressRing.setStroke(Color.web("#10b981"));
+        }
+
+        java.awt.Toolkit.getDefaultToolkit().beep(); // play sound
     }
 
     public void play() {
@@ -109,10 +138,10 @@ public class Controller implements Initializable {
 
     public void reset() {
         TimerManager.getInstance().reset();
-        timerState.setText("Work Time");
-        timerState.setTextFill(Color.web("#3b82f6"));
-        timeBox.setBackground(new Background(new BackgroundFill(Color.web("#f0f9ff"), new CornerRadii(16), Insets.EMPTY)));
-        progressRing.setStroke(Color.web("#3b82f6"));
+        // Force UI update after reset
+        Platform.runLater(() -> {
+            updateModeUI(TimerManager.getInstance());
+        });
     }
 
     public void applySettings() {
@@ -153,6 +182,34 @@ public class Controller implements Initializable {
         }
     }
 
+    // Call this when the controller becomes active (when user navigates to timer page)
+    public void onControllerActivated() {
+        isControllerActive = true;
+        // Force UI update to sync with current timer state
+        Platform.runLater(() -> {
+            TimerManager manager = TimerManager.getInstance();
+            updateDisplay(manager.timeLeft);
+            updateProgressRing(manager);
+            updateModeUI(manager);
+
+            // Update session displays with current counts
+            workSessionsDisplay.setText(String.valueOf(workSessions));
+            breakSessionsDisplay.setText(String.valueOf(breakSessions));
+
+            // Update play button state
+            if (manager.isRunning()) {
+                playButton.setStyle("-fx-background-color: #10b981;");
+            } else {
+                playButton.setStyle("-fx-background-color: #3b82f6;");
+            }
+        });
+    }
+
+    // Call this when the controller becomes inactive (when user navigates away)
+    public void onControllerDeactivated() {
+        isControllerActive = false;
+    }
+
     private void loadSessionCounts() {
         if (currentUsername != null) {
             int[] counts = SQliteConnection.getSessionCounts(currentUsername);
@@ -164,27 +221,33 @@ public class Controller implements Initializable {
     }
 
     public void updateDisplay(int timeLeft) {
-        int minutes = timeLeft / 60;
-        int seconds = timeLeft % 60;
-        timerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
+        if (timerDisplay != null) {
+            int minutes = timeLeft / 60;
+            int seconds = timeLeft % 60;
+            timerDisplay.setText(String.format("%02d:%02d", minutes, seconds));
+        }
     }
 
     public void updateProgressRing(TimerManager manager) {
-        double progress = (double) (manager.isWorkTime ? manager.workTime - manager.timeLeft : manager.breakTime - manager.timeLeft)
-                / (manager.isWorkTime ? manager.workTime : manager.breakTime);
+        if (progressRing != null) {
+            double progress = (double) (manager.isWorkTime ? manager.workTime - manager.timeLeft : manager.breakTime - manager.timeLeft)
+                    / (manager.isWorkTime ? manager.workTime : manager.breakTime);
 
-        double circumference = 2 * Math.PI * progressRing.getRadius();
-        double visibleLength = progress * circumference;
+            double circumference = 2 * Math.PI * progressRing.getRadius();
+            double visibleLength = progress * circumference;
 
-        progressRing.getStrokeDashArray().clear();
-        progressRing.getStrokeDashArray().addAll(visibleLength, circumference);
-        progressRing.setRotate(90);
+            progressRing.getStrokeDashArray().clear();
+            progressRing.getStrokeDashArray().addAll(visibleLength, circumference);
+            progressRing.setRotate(90);
+        }
     }
 
     private Stage stage;
     private Scene scene;
 
     public void logout(ActionEvent event) throws IOException {
+        onControllerDeactivated(); // Mark as inactive
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
@@ -203,6 +266,8 @@ public class Controller implements Initializable {
     }
 
     public void taskManager(ActionEvent event) throws IOException {
+        onControllerDeactivated(); // Mark as inactive
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
         Parent root = loader.load();
         TaskManager taskManagerController = loader.getController();
@@ -220,6 +285,8 @@ public class Controller implements Initializable {
     }
 
     public void aiAgent(ActionEvent event) throws IOException {
+        onControllerDeactivated(); // Mark as inactive
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
         Parent root = loader.load();
         AIAgentController aiController = loader.getController();
@@ -237,6 +304,8 @@ public class Controller implements Initializable {
     }
 
     public void productivity(ActionEvent event) throws IOException {
+        onControllerDeactivated(); // Mark as inactive
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
         Parent root = loader.load();
         Productivity productivity = loader.getController();
@@ -265,6 +334,8 @@ public class Controller implements Initializable {
     }
 
     private void handleLogoutRequest() {
+        onControllerDeactivated(); // Mark as inactive
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
         alert.setHeaderText("You're about to logout!");
