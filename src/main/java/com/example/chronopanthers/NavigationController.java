@@ -45,7 +45,7 @@ public class NavigationController {
         // IMPORTANT: Activate the controller to sync UI with timer state
         controller.onControllerActivated();
 
-        switchScene(root, "Pomodoro Timer", "/com/example/chronopanthers/timer.css", event);
+        switchScene(loader, root, "Pomodoro Timer", "/com/example/chronopanthers/timer.css", event);
     }
 
     @FXML
@@ -58,7 +58,7 @@ public class NavigationController {
             controller.setCurrentUser(currentUsername);
         }
 
-        switchScene(root, "Task Manager", "/com/example/chronopanthers/taskManager.css", event);
+        switchScene(loader, root, "Task Manager", "/com/example/chronopanthers/taskManager.css", event);
     }
 
     @FXML
@@ -71,7 +71,7 @@ public class NavigationController {
             controller.setCurrentUser(currentUsername);
         }
 
-        switchScene(root, "AI Study Assistant", "/com/example/chronopanthers/aiAgent.css", event);
+        switchScene(loader, root, "AI Study Assistant", "/com/example/chronopanthers/aiAgent.css", event);
     }
 
     @FXML
@@ -86,7 +86,7 @@ public class NavigationController {
             controller.initializeNavigation();
         }
 
-        switchScene(root, "Productivity Tracker", "/com/example/chronopanthers/productivity.css", event);
+        switchScene(loader, root, "Productivity Tracker", "/com/example/chronopanthers/productivity.css", event);
     }
 
     @FXML
@@ -97,12 +97,13 @@ public class NavigationController {
         alert.setContentText("Have you completed all your work?");
 
         if(alert.showAndWait().get() == ButtonType.OK){
-            Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
-            switchScene(root, "Login Page", "/com/example/chronopanthers/loginPage.css", event);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("loginPage.fxml"));
+            Parent root = loader.load();
+            switchScene(loader, root, "Login Page", "/com/example/chronopanthers/loginPage.css", event);
         }
     }
 
-    private void switchScene(Parent root, String title, String cssFile, ActionEvent event) {
+    private void switchScene(FXMLLoader loader, Parent root, String title, String cssFile, ActionEvent event) {
         try {
             Stage stage = getStageFromEvent(event);
             Scene scene = new Scene(root);
@@ -111,6 +112,17 @@ public class NavigationController {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
+
+            Object controller = loader.getController();
+            if (controller instanceof Controller baseController) {
+                baseController.setStage(stage);
+            } else if (controller instanceof TaskManager tm) {
+                tm.setStage(stage);
+            } else if (controller instanceof AIAgentController ai) {
+                ai.setStage(stage);
+            } else if (controller instanceof Productivity prod) {
+                prod.setStage(stage);
+            }
         } catch (Exception e) {
             System.err.println("Error switching scenes: " + e.getMessage());
             e.printStackTrace();
@@ -127,38 +139,5 @@ public class NavigationController {
             return (Stage) node.getScene().getWindow();
         }
         throw new IllegalArgumentException("Unable to determine stage from event source: " + source.getClass());
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-
-        this.stage.setOnCloseRequest(event -> {
-            event.consume(); // prevent window from closing
-            handleLogoutRequest(); // show the confirmation dialog
-        });
-    }
-
-    private void handleLogoutRequest() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("You're about to logout!");
-        alert.setContentText("Have you completed all your work?");
-
-        if (alert.showAndWait().get() == ButtonType.OK) {
-            TimerManager.getInstance().reset();
-
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
-                Scene scene = new Scene(root);
-                scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
-
-                stage.setTitle("Login Page");
-                stage.setScene(scene);
-                stage.setResizable(false);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -42,7 +42,13 @@ public class SignUpPageController implements Initializable {
         Image myImage = new Image(getClass().getResourceAsStream("Images/Panther.jpeg"));
         imageView.setImage(myImage);
 
-        Platform.runLater(() -> signUpButton.requestFocus());
+        //Platform.runLater(() -> signUpButton.requestFocus());
+
+        Platform.runLater(() -> {
+            signUpButton.requestFocus();
+            Stage stage = (Stage) signUpButton.getScene().getWindow();
+            stage.setOnCloseRequest(null); // reset to default close behavior
+        });
 
         if (loginModel.isDbConnected()) {
             isConnected.setText("");

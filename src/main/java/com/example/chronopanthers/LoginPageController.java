@@ -41,7 +41,13 @@ public class LoginPageController implements Initializable {
         Image myImage = new Image(getClass().getResourceAsStream("Images/Panther.jpeg"));
         imageView.setImage(myImage);
 
-        Platform.runLater(() -> login.requestFocus());
+        //Platform.runLater(() -> login.requestFocus());
+
+        Platform.runLater(() -> {
+            login.requestFocus();
+            Stage stage = (Stage) login.getScene().getWindow();
+            stage.setOnCloseRequest(null); // reset to default close behavior
+        });
 
 
         if (loginModel.isDbConnected()) {
@@ -71,8 +77,8 @@ public class LoginPageController implements Initializable {
                 // Get the controller and set the current user
                 Controller mainController = loader.getController();
                 mainController.setCurrentUser(txtUsername.getText());
-
                 stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                mainController.setStage(stage);
                 scene = new Scene(root);
                 scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
                 stage.setTitle("Timer");

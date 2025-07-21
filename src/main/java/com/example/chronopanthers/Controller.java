@@ -47,8 +47,9 @@ public class Controller implements Initializable {
     private String currentUsername;
     private int workSessions = 0;
     private int breakSessions = 0;
-    private Timeline timeline;
     private boolean isControllerActive = true;
+    private Stage stage;
+    private Scene scene;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -76,7 +77,7 @@ public class Controller implements Initializable {
             // Use Platform.runLater to ensure UI updates happen on JavaFX thread
             Platform.runLater(() -> {
                 if (isControllerActive) {
-                    updateModeUI(manager);
+                    updateModeUI(manager, true);
                 }
 
                 // Session counting logic (always runs, even when controller is inactive)
@@ -107,10 +108,10 @@ public class Controller implements Initializable {
         // Initial UI update
         updateDisplay(manager.timeLeft);
         updateProgressRing(manager);
-        updateModeUI(manager);
+        updateModeUI(manager, false);
     }
 
-    private void updateModeUI(TimerManager manager) {
+    private void updateModeUI(TimerManager manager, boolean playSound) {
         if (manager.isWorkTime) {
             timerState.setText("Work Time");
             timerState.setTextFill(Color.web("#3b82f6"));
@@ -123,7 +124,9 @@ public class Controller implements Initializable {
             progressRing.setStroke(Color.web("#10b981"));
         }
 
-        java.awt.Toolkit.getDefaultToolkit().beep(); // play sound
+        if (playSound) {
+            java.awt.Toolkit.getDefaultToolkit().beep(); // play sound
+        }
     }
 
     public void play() {
@@ -140,7 +143,7 @@ public class Controller implements Initializable {
         TimerManager.getInstance().reset();
         // Force UI update after reset
         Platform.runLater(() -> {
-            updateModeUI(TimerManager.getInstance());
+            updateModeUI(TimerManager.getInstance(), false);
         });
     }
 
@@ -190,7 +193,7 @@ public class Controller implements Initializable {
             TimerManager manager = TimerManager.getInstance();
             updateDisplay(manager.timeLeft);
             updateProgressRing(manager);
-            updateModeUI(manager);
+            updateModeUI(manager, false); // This causes an extra beep sound when switching to timer
 
             // Update session displays with current counts
             workSessionsDisplay.setText(String.valueOf(workSessions));
@@ -242,8 +245,7 @@ public class Controller implements Initializable {
         }
     }
 
-    private Stage stage;
-    private Scene scene;
+
 
     public void logout(ActionEvent event) throws IOException {
         onControllerDeactivated(); // Mark as inactive
