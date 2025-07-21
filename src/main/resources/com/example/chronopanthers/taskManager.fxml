@@ -7,8 +7,8 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.TaskManager">
     <children>
@@ -26,11 +26,11 @@
             <TableColumn fx:id="priority" minWidth="5.0" prefWidth="95.0" resizable="false" text="Priority" />
         </columns>
       </TableView>
-      <Button layoutX="188.0" layoutY="679.0" mnemonicParsing="false" onAction="#addTask" text="Add Task" />
+      <Button layoutX="338.0" layoutY="680.0" mnemonicParsing="false" onAction="#addTask" text="Add Task" />
       <ComboBox fx:id="sortBox" layoutX="6.0" layoutY="64.0" prefHeight="26.0" prefWidth="158.0" />
-      <Label fx:id="sorterLabel" layoutX="14.0" layoutY="684.0" prefHeight="17.0" prefWidth="158.0" />
-      <Button fx:id="completeTaskButton" layoutX="337.0" layoutY="679.0" mnemonicParsing="false" onAction="#completeTask" text="Complete" />
-      <Button fx:id="deleteTaskButton" layoutX="267.0" layoutY="679.0" mnemonicParsing="false" onAction="#deleteTask" text="Delete" />
+      <Label fx:id="sorterLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="684.0" prefHeight="17.0" prefWidth="316.0" />
+      <Button fx:id="completeTaskButton" layoutX="414.0" layoutY="680.0" mnemonicParsing="false" onAction="#completeTask" text="Complete" />
+      <Button fx:id="deleteTaskButton" layoutX="534.0" layoutY="680.0" mnemonicParsing="false" onAction="#deleteTask" text="Delete" />
       <TextField fx:id="searchName" layoutX="454.0" layoutY="64.0" prefHeight="26.0" prefWidth="132.0" />
       <Label layoutX="408.0" layoutY="69.0" text="Search " />
       <Label alignment="CENTER" layoutX="108.0" layoutY="5.0" prefHeight="17.0" prefWidth="386.0" text="Tasks">
@@ -43,7 +43,7 @@
       <Label layoutX="6.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Sort By:" />
       <Label layoutX="288.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Filter by Task Type:" />
       <Label layoutX="167.0" layoutY="48.0" prefHeight="17.0" prefWidth="117.0" text="Filter by Priority:" />
-      <Button fx:id="editButton" layoutX="416.0" layoutY="679.0" mnemonicParsing="false" onAction="#editTask" text="Edit" />
+      <Button fx:id="editButton" layoutX="491.0" layoutY="680.0" mnemonicParsing="false" onAction="#editTask" text="Edit" />
             </children>
         </AnchorPane>
     </children>

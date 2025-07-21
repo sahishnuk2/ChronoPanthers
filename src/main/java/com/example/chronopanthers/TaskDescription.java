@@ -21,7 +21,7 @@ public class TaskDescription implements Initializable {
     @FXML
     private Button addTaskButton;
     @FXML
-    private Label username;
+    private Label label;
     @FXML
     private ComboBox<Task.Priority> priorityComboBox;
     @FXML
@@ -51,12 +51,12 @@ public class TaskDescription implements Initializable {
 
     public void addTask() {
         if (taskName.getText().isBlank()) {
-            username.setText("Empty TaskName!");
+            label.setText("Empty TaskName!");
             return;
         }
 
         if (priorityComboBox.getValue() == null) {
-            username.setText("Choose Priority!");
+            label.setText("Choose Priority!");
             return;
         }
 
@@ -66,12 +66,12 @@ public class TaskDescription implements Initializable {
         LocalDate date = dueDate.getValue();
 
         if (!isNormal && date == null) {
-            username.setText("Due date not selected");
+            label.setText("Due date not selected");
             return;
         }
 
         if (!isEditing && TaskDatabaseManager.taskExists(user, taskname)) {
-            username.setText("Task with this name already exists!");
+            label.setText("Task with this name already exists!");
             return;
         }
 
