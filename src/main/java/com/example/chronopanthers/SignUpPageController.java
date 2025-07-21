@@ -64,13 +64,10 @@ public class SignUpPageController implements Initializable {
                 isConnected.setText("Username Empty!");
             } else if (txtPassword.getText().isBlank()) {
                 isConnected.setText("Password Empty!");
+            } else if (txtPassword.getText().length() < 8) {
+                isConnected.setText("Password Min Length: 8");
             } else if (!loginModel.isSignUp(txtUsername.getText(), txtPassword.getText())) {
                 isConnected.setText("Username already used!");
-//                Alert alert = new Alert(Alert.AlertType.ERROR);
-//                alert.setContentText("Username is already used OR empty field");
-//                alert.show();
-
-
             } else {
                 isConnected.setText("");
                 Alert confirmation = new Alert(Alert.AlertType.INFORMATION);
