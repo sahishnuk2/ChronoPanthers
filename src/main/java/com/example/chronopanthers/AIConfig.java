@@ -9,7 +9,7 @@ public class AIConfig {
 
     private static String loadApiKeyFromEnv() {
         // First try to load from .env file
-        try (Scanner scanner = new Scanner(new FileInputStream(".env"))) {
+        try (Scanner scanner = new Scanner(DatabaseConfig.class.getClassLoader().getResourceAsStream(".env"))) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
 
@@ -19,7 +19,7 @@ public class AIConfig {
                     return key;
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("⚠ .env file not found, trying system environment variable");
         }
 

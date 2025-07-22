@@ -8,7 +8,7 @@ public class DatabaseConfig {
     private static final String JDBC_URI = loadJdbcUriFromEnv();
 
     private static String loadJdbcUriFromEnv() {
-        try (Scanner scanner = new Scanner(new FileInputStream(".env"))) {
+        try (Scanner scanner = new Scanner(DatabaseConfig.class.getClassLoader().getResourceAsStream(".env"))) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
 
@@ -18,7 +18,7 @@ public class DatabaseConfig {
                     return uri;
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("⚠ .env file not found, trying system environment variable");
         }
 

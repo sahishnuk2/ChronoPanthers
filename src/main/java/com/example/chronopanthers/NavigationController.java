@@ -63,7 +63,7 @@ public class NavigationController {
 
     @FXML
     private void goToAIAgent(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AIAgent.fxml"));
         Parent root = loader.load();
 
         AIAgentController controller = loader.getController();
@@ -71,7 +71,7 @@ public class NavigationController {
             controller.setCurrentUser(currentUsername);
         }
 
-        switchScene(loader, root, "AI Study Assistant", "/com/example/chronopanthers/aiAgent.css", event);
+        switchScene(loader, root, "AI Study Assistant", "/com/example/chronopanthers/AIAgent.css", event);
     }
 
     @FXML
