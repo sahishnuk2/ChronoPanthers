@@ -24,7 +24,7 @@ public class NavigationController {
 
     public void setCurrentUser(String username) {
         this.currentUsername = username;
-        System.out.println("NavigationController: Setting username to: " + username);
+        //System.out.println("NavigationController: Setting username to: " + username);
         if (usernameLabel != null) {
             usernameLabel.setText("Welcome, " + username);
         }
@@ -97,6 +97,7 @@ public class NavigationController {
         alert.setContentText("Have you completed all your work?");
 
         if(alert.showAndWait().get() == ButtonType.OK){
+            TimerManager.getInstance().reset();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("loginPage.fxml"));
             Parent root = loader.load();
             switchScene(loader, root, "Login Page", "/com/example/chronopanthers/loginPage.css", event);

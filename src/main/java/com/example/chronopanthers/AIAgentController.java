@@ -165,7 +165,7 @@ public class AIAgentController implements Initializable {
     private void loadUserTasks() {
         if (currentUsername != null) {
             userTasks = TaskDatabaseManager.getUserTasks(currentUsername);
-            System.out.println("Loaded " + userTasks.size() + " tasks for AI analysis");
+            //System.out.println("Loaded " + userTasks.size() + " tasks for AI analysis");
         }
     }
 
@@ -360,83 +360,7 @@ public class AIAgentController implements Initializable {
         });
     }
 
-    // Navigation methods
-    @FXML
-    public void goToTimer(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
-        Parent root = loader.load();
-
-        Controller timerController = loader.getController();
-        if (currentUsername != null) {
-            timerController.setCurrentUser(currentUsername);
-        }
-
-        Stage stage = getStageFromEvent(event);
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
-        stage.setTitle("Pomodoro Timer");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    @FXML
-    public void goToTaskManager(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
-        Parent root = loader.load();
-
-        TaskManager taskManagerController = loader.getController();
-        if (currentUsername != null) {
-            taskManagerController.setCurrentUser(currentUsername);
-        }
-
-        Stage stage = getStageFromEvent(event);
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
-        stage.setTitle("Task Manager");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    @FXML
-    public void logout(ActionEvent event) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("You're about to logout!");
-        alert.setContentText("Your chat history will be cleared. Continue?");
-
-        if(alert.showAndWait().get() == ButtonType.OK){
-            Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
-            Stage stage = getStageFromEvent(event);
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
-            stage.setTitle("Login Page");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        }
-    }
-
-    @FXML
-    public void goToStats(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
-        Parent root = loader.load();
-
-        Productivity controller = loader.getController();
-        if (currentUsername != null) {
-            controller.setCurrentUsername(currentUsername);
-        }
-
-        Stage stage = getStageFromEvent(event);
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/productivity.css").toExternalForm());
-        stage.setTitle("Productivity Tracker");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
+    // Methods to handle logout requests
     public void setStage(Stage stage) {
         this.stage = stage;
 
@@ -467,24 +391,6 @@ public class AIAgentController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    // Helper method to get Stage from different event sources
-    private Stage getStageFromEvent(ActionEvent event) {
-        Object source = event.getSource();
-
-        if (source instanceof MenuItem) {
-            // For menu items
-            MenuItem menuItem = (MenuItem) source;
-            return (Stage) menuItem.getParentPopup().getOwnerWindow();
-        } else if (source instanceof Node) {
-            // For buttons and other nodes
-            Node node = (Node) source;
-            return (Stage) node.getScene().getWindow();
-        } else {
-            // Fallback - try to get from any node in the scene
-            throw new IllegalArgumentException("Unable to determine stage from event source: " + source.getClass());
         }
     }
 }

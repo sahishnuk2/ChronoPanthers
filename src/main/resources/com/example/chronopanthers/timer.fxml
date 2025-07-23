@@ -2,9 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -38,12 +35,12 @@
             </AnchorPane>
          </children>
       </VBox>
-      <Label fx:id="titleLabel" alignment="CENTER" layoutY="30.0" prefHeight="17.0" prefWidth="587.0" text="ChronoPanthers Pomodoro" textAlignment="CENTER">
+      <Label fx:id="titleLabel" alignment="CENTER" layoutY="17.0" prefHeight="17.0" prefWidth="587.0" text="ChronoPanthers Pomodoro" textAlignment="CENTER">
          <font>
             <Font size="30.0" />
          </font>
       </Label>
-      <Label fx:id="subtitle" alignment="CENTER" layoutX="-1.0" layoutY="65.0" prefHeight="17.0" prefWidth="587.0" text="Flow with time, achieve with focus" />
+      <Label fx:id="subtitle" alignment="CENTER" layoutX="-1.0" layoutY="52.0" prefHeight="17.0" prefWidth="587.0" text="Flow with time, achieve with focus" />
       <VBox fx:id="settings" alignment="CENTER" layoutX="105.0" layoutY="373.0" prefHeight="149.0" prefWidth="401.0" spacing="5.0">
          <children>
             <Label fx:id="changeSettings" alignment="CENTER" prefHeight="17.0" prefWidth="403.0" text="Work Time" />

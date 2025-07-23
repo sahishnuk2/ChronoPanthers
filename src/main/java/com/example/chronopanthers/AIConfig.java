@@ -15,7 +15,7 @@ public class AIConfig {
 
                 if (line.startsWith("OPENROUTER_API_KEY=")) {
                     String key = line.substring("OPENROUTER_API_KEY=".length());
-                    System.out.println("✓ Loaded OpenRouter API key from .env file");
+                    //System.out.println("✓ Loaded OpenRouter API key from .env file");
                     return key;
                 }
             }
@@ -26,7 +26,7 @@ public class AIConfig {
         // Try system environment variable
         String envKey = System.getenv("OPENROUTER_API_KEY");
         if (envKey != null) {
-            System.out.println("✓ Loaded OpenRouter API key from system environment");
+            //System.out.println("✓ Loaded OpenRouter API key from system environment");
             return envKey;
         }
 

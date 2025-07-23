@@ -12,6 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -402,7 +403,7 @@ public class AIService {
             // Format: "add task: [task name]" (no date)
             taskName = matcherWithoutDate.group(1).trim();
 
-            // Check if task already exists
+            // If task already exists, inform the user (don't add the task)
             if (TaskDatabaseManager.taskExists(username, taskName)) {
                 return new TaskAddResult(true,
                         "⚠️ **Task Already Exists!**\n\n" +
@@ -471,29 +472,33 @@ public class AIService {
     }
 
     private LocalDate parseDate(String dateString) {
-        // List of common date formats to try
-        DateTimeFormatter[] formatters = {
-                DateTimeFormatter.ofPattern("d MMMM yyyy"),      // 2 July 2025
-                DateTimeFormatter.ofPattern("MMMM d, yyyy"),     // July 2, 2025
-                DateTimeFormatter.ofPattern("MMMM d yyyy"),      // July 2 2025
-                DateTimeFormatter.ofPattern("yyyy-MM-dd"),       // 2025-07-02
-                DateTimeFormatter.ofPattern("dd/MM/yyyy"),       // 02/07/2025
-                DateTimeFormatter.ofPattern("MM/dd/yyyy"),       // 07/02/2025
-                DateTimeFormatter.ofPattern("d-M-yyyy"),         // 2-7-2025
-                DateTimeFormatter.ofPattern("d.M.yyyy"),         // 2.7.2025
-                DateTimeFormatter.ofPattern("d MMM yyyy"),       // 2 Jul 2025
-                DateTimeFormatter.ofPattern("MMM d, yyyy"),      // Jul 2, 2025
-                DateTimeFormatter.ofPattern("MMM d yyyy")        // Jul 2 2025
+        // Date Formats Allowed
+        String[] patterns = {
+                "d MMMM yyyy",   // 2 July 2025
+                "MMMM d, yyyy",  // July 2, 2025
+                "MMMM d yyyy",   // July 2 2025
+                "yyyy-MM-dd",    // 2025-07-02
+                "dd/MM/yyyy",    // 02/07/2025
+                "MM/dd/yyyy",    // 07/02/2025
+                "d-M-yyyy",      // 2-7-2025
+                "d.M.yyyy",      // 2.7.2025
+                "d MMM yyyy",    // 2 Jul 2025
+                "MMM d, yyyy",   // Jul 2, 2025
+                "MMM d yyyy"     // Jul 2 2025
         };
 
-        for (DateTimeFormatter formatter : formatters) {
+        for (String str : patterns) {
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive() // Allows for lower case for the month
+                    .appendPattern(str)
+                    .toFormatter();
+
             try {
                 return LocalDate.parse(dateString, formatter);
             } catch (DateTimeParseException e) {
-                // Try next formatter
+                // Try next format
             }
         }
-
         return null; // Could not parse
     }
 

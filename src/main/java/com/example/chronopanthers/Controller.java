@@ -32,7 +32,7 @@ public class Controller implements Initializable {
     @FXML
     private Spinner<Integer> workDurationInput, breakDurationInput;
     @FXML
-    private Button playButton, pauseButton, resetButton, applySettingsButton;
+    private Button playButton;
     @FXML
     private Label timerDisplay, timerState, workSessionsDisplay, breakSessionsDisplay;
     @FXML
@@ -49,7 +49,6 @@ public class Controller implements Initializable {
     private int breakSessions = 0;
     private boolean isControllerActive = true;
     private Stage stage;
-    private Scene scene;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -63,7 +62,6 @@ public class Controller implements Initializable {
 
         // UI update on each tick
         manager.setOnTick(() -> {
-            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
             Platform.runLater(() -> {
                 if (isControllerActive) {
                     updateDisplay(manager.timeLeft);
@@ -74,7 +72,6 @@ public class Controller implements Initializable {
 
         // Update mode UI on session switch
         manager.setOnModeSwitch(() -> {
-            // Use Platform.runLater to ensure UI updates happen on JavaFX thread
             Platform.runLater(() -> {
                 if (isControllerActive) {
                     updateModeUI(manager, true);
@@ -82,7 +79,7 @@ public class Controller implements Initializable {
 
                 // Session counting logic (always runs, even when controller is inactive)
                 if (manager.isWorkTime) {
-                    // We just switched TO work time, meaning we completed a break session
+                    // Just completed break, now work time!
                     breakSessions++;
                     if (isControllerActive) {
                         breakSessionsDisplay.setText(String.valueOf(breakSessions));
@@ -92,7 +89,7 @@ public class Controller implements Initializable {
                         logBreakSession(currentUsername, manager.breakTime / 60);
                     }
                 } else {
-                    // We just switched TO break time, meaning we completed a work session
+                    // Just complete work, now break time!
                     workSessions++;
                     if (isControllerActive) {
                         workSessionsDisplay.setText(String.valueOf(workSessions));
@@ -141,10 +138,7 @@ public class Controller implements Initializable {
 
     public void reset() {
         TimerManager.getInstance().reset();
-        // Force UI update after reset
-        Platform.runLater(() -> {
-            updateModeUI(TimerManager.getInstance(), false);
-        });
+        updateModeUI(TimerManager.getInstance(), false);
     }
 
     public void applySettings() {
@@ -164,7 +158,7 @@ public class Controller implements Initializable {
 
     public void setCurrentUser(String username) {
         this.currentUsername = username;
-        System.out.println("Controller: Setting username to: " + username);
+        //System.out.println("Controller: Setting username to: " + username);
 
         if (titleLabel != null) {
             titleLabel.setText("Let's Pomodoro, " + username);
@@ -245,93 +239,12 @@ public class Controller implements Initializable {
         }
     }
 
-
-
-    public void logout(ActionEvent event) throws IOException {
-        onControllerDeactivated(); // Mark as inactive
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("You're about to logout!");
-        alert.setContentText("Have you completed all your work?");
-        if (alert.showAndWait().get() == ButtonType.OK) {
-            TimerManager.getInstance().reset();
-            Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
-            stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-            scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/loginPage.css").toExternalForm());
-            stage.setTitle("Login Page");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        }
-    }
-
-    public void taskManager(ActionEvent event) throws IOException {
-        onControllerDeactivated(); // Mark as inactive
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("taskManager.fxml"));
-        Parent root = loader.load();
-        TaskManager taskManagerController = loader.getController();
-        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-        taskManagerController.setStage(stage);
-        if (currentUsername != null) {
-            taskManagerController.setCurrentUser(currentUsername);
-        }
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/taskManager.css").toExternalForm());
-        stage.setTitle("Task Manager");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    public void aiAgent(ActionEvent event) throws IOException {
-        onControllerDeactivated(); // Mark as inactive
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
-        Parent root = loader.load();
-        AIAgentController aiController = loader.getController();
-        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-        aiController.setStage(stage);
-        if (currentUsername != null) {
-            aiController.setCurrentUser(currentUsername);
-        }
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
-        stage.setTitle("AI Study Assistant");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    public void productivity(ActionEvent event) throws IOException {
-        onControllerDeactivated(); // Mark as inactive
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("productivity.fxml"));
-        Parent root = loader.load();
-        Productivity productivity = loader.getController();
-        stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
-        productivity.setStage(stage);
-        if (currentUsername != null) {
-            productivity.setCurrentUsername(currentUsername);
-            // Also initialize the navigation after setting username
-            productivity.initializeNavigation();
-        }
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/productivity.css").toExternalForm());
-        stage.setTitle("Productivity Tracker");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
     public void setStage(Stage stage) {
         this.stage = stage;
 
         this.stage.setOnCloseRequest(event -> {
             event.consume(); // prevent window from closing
-            handleLogoutRequest(); // show the confirmation dialog
+            handleLogoutRequest(); // log out confirmation pop up
         });
     }
 

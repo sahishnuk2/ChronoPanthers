@@ -14,7 +14,7 @@ public class DatabaseConfig {
 
                 if (line.startsWith("SUPABASE_JDBC_URI=")) {
                     String uri = line.substring("SUPABASE_JDBC_URI=".length());
-                    System.out.println("✓ Loaded JDBC URI from .env file");
+                    //System.out.println("✓ Loaded JDBC URI from .env file");
                     return uri;
                 }
             }
@@ -24,7 +24,7 @@ public class DatabaseConfig {
 
         String envUri = System.getenv("SUPABASE_JDBC_URI");
         if (envUri != null) {
-            System.out.println("✓ Loaded JDBC URI from system environment");
+            //System.out.println("✓ Loaded JDBC URI from system environment");
             return envUri;
         }
 

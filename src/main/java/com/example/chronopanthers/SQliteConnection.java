@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// Supposed to be Named SupabaseConnection, to edit when we have time
 public class SQliteConnection {
     public static Connection connector() {
         try {
@@ -10,7 +11,7 @@ public class SQliteConnection {
 
             Connection conn = DriverManager.getConnection(DatabaseConfig.getJdbcUrl());
 
-            System.out.println("Connection to Supabase successful!");
+            //System.out.println("Connection to Supabase successful!");
             return conn;
 
         } catch (ClassNotFoundException e) {
@@ -35,7 +36,7 @@ public class SQliteConnection {
             if (conn != null) {
                 pstmt.setString(1, username);
                 int rowsAffected = pstmt.executeUpdate();
-                System.out.println("Work session updated for " + username + ". Rows affected: " + rowsAffected);
+                //System.out.println("Work session updated for " + username + ". Rows affected: " + rowsAffected);
             }
 
         } catch (SQLException e) {
@@ -54,7 +55,7 @@ public class SQliteConnection {
             pstmt.setInt(3, duration);
 
             int rowsInserted = pstmt.executeUpdate();
-            System.out.println("Logged work session for " + username + ". Rows inserted: " + rowsInserted);
+            //System.out.println("Logged work session for " + username + ". Rows inserted: " + rowsInserted);
 
         } catch (SQLException e) {
             System.err.println("Error logging work session: " + e.getMessage());
@@ -70,7 +71,7 @@ public class SQliteConnection {
             if (conn != null) {
                 pstmt.setString(1, username);
                 int rowsAffected = pstmt.executeUpdate();
-                System.out.println("Break session updated for " + username + ". Rows affected: " + rowsAffected);
+                //System.out.println("Break session updated for " + username + ". Rows affected: " + rowsAffected);
             }
 
         } catch (SQLException e) {
@@ -89,7 +90,7 @@ public class SQliteConnection {
             pstmt.setInt(3, duration);
 
             int rowsInserted = pstmt.executeUpdate();
-            System.out.println("Logged break session for " + username + ". Rows inserted: " + rowsInserted);
+            //System.out.println("Logged break session for " + username + ". Rows inserted: " + rowsInserted);
 
         } catch (SQLException e) {
             System.err.println("Error logging break session: " + e.getMessage());
@@ -110,8 +111,8 @@ public class SQliteConnection {
                 if (rs.next()) {
                     counts[0] = rs.getInt("workSessions");
                     counts[1] = rs.getInt("breakSessions");
-                    System.out.println("Retrieved sessions for " + username +
-                            " - Work: " + counts[0] + ", Break: " + counts[1]);
+                    //System.out.println("Retrieved sessions for " + username +
+                     //       " - Work: " + counts[0] + ", Break: " + counts[1]);
                 }
             }
 

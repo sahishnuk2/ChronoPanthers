@@ -41,12 +41,10 @@ public class LoginPageController implements Initializable {
         Image myImage = new Image(getClass().getResourceAsStream("Images/Panther.jpeg"));
         imageView.setImage(myImage);
 
-        //Platform.runLater(() -> login.requestFocus());
-
         Platform.runLater(() -> {
             login.requestFocus();
             Stage stage = (Stage) login.getScene().getWindow();
-            stage.setOnCloseRequest(null); // reset to default close behavior
+            stage.setOnCloseRequest(null); // no logout for login page
         });
 
 
@@ -68,13 +66,10 @@ public class LoginPageController implements Initializable {
                 isConnected.setText("Username or password is incorrect");
             } else {
                 isConnected.setText("");
-                System.out.println("Login Successful");
+                //System.out.println("Login Successful");
 
-                // Use FXMLLoader to get the controller
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
                 Parent root = loader.load();
-
-                // Get the controller and set the current user
                 Controller mainController = loader.getController();
                 mainController.setCurrentUser(txtUsername.getText());
                 stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -101,7 +96,4 @@ public class LoginPageController implements Initializable {
         stage.setResizable(false);
         stage.show();
     }
-
-
-
 }

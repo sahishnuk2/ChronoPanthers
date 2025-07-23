@@ -21,7 +21,7 @@ public class LoginModel {
         }
     }
 
-    // Simple hash function
+    // Hash function to secure password
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -36,6 +36,7 @@ public class LoginModel {
         }
     }
 
+    // Check if login is successful
     public boolean isLogin(String user, String pass) throws SQLException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -59,6 +60,7 @@ public class LoginModel {
         }
     }
 
+    // Check if sign up is successful
     public boolean isSignUp(String user, String pass) throws SQLException {
         PreparedStatement selectStatement = null;
         ResultSet resultSet = null;

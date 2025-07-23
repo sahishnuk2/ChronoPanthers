@@ -40,7 +40,7 @@ public class TaskDatabaseManager {
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Task added successfully: " + task.getTaskName());
+                //System.out.println("Task added successfully: " + task.getTaskName());
                 return true;
             }
 
@@ -108,7 +108,7 @@ public class TaskDatabaseManager {
                 tasks.add(task);
             }
 
-            System.out.println("Retrieved " + tasks.size() + " tasks for user: " + username);
+            //System.out.println("Retrieved " + tasks.size() + " tasks for user: " + username);
 
         } catch (SQLException e) {
             System.err.println("Error retrieving tasks: " + e.getMessage());
@@ -131,7 +131,7 @@ public class TaskDatabaseManager {
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Task completion updated: " + taskName + " -> " + completed);
+                //System.out.println("Task completion updated: " + taskName + " -> " + completed);
                 return true;
             } else {
                 System.out.println("No task found to update: " + taskName);
@@ -157,7 +157,7 @@ public class TaskDatabaseManager {
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Task deleted successfully: " + taskName);
+                //System.out.println("Task deleted successfully: " + taskName);
                 return true;
             } else {
                 System.out.println("No task found to delete: " + taskName);

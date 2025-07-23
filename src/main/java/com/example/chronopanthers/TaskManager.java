@@ -116,7 +116,7 @@ public class TaskManager implements Initializable {
 
         // Test database connection
         if (TaskDatabaseManager.testConnection()) {
-            System.out.println("✓ Task database connection successful");
+            //System.out.println("✓ Task database connection successful");
         } else {
             sorterLabel.setText("Database connection failed");
         }
@@ -196,12 +196,6 @@ public class TaskManager implements Initializable {
         }
     }
 
-    // Refresh tasks from database
-    @FXML
-    public void refreshTasks() {
-        loadUserTasks();
-        sorterLabel.setText("Tasks refreshed");
-    }
 
     @FXML
     public void addTask() throws IOException {
@@ -272,13 +266,6 @@ public class TaskManager implements Initializable {
         );
 
         if (success) {
-//            // Update local object
-//            selectedTask.complete();
-//            taskTable.refresh();
-//            updateTaskStats();
-//
-//            // Re-sort to move completed tasks to bottom
-//            FXCollections.sort(tasks, new TaskComparator(TaskComparator.SortMode.DEADLINE_FIRST));
             loadUserTasks();
             sorterLabel.setText("Task marked as completed!");
         } else {
@@ -286,7 +273,6 @@ public class TaskManager implements Initializable {
         }
     }
 
-    // New method to delete selected task
     @FXML
     public void deleteTask() {
         Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
@@ -349,55 +335,13 @@ public class TaskManager implements Initializable {
                 sorterLabel.setText("Failed to edit in database");
             }
 
-            //loadUserTasks();
         }
 
-    }
-
-    // Show only overdue tasks
-    @FXML
-    public void showOverdueTasks() {
-        if (currentUsername == null) {
-            sorterLabel.setText("No user logged in");
-            return;
-        }
-
-        List<Task> overdueTasks = TaskDatabaseManager.getOverdueTasks(currentUsername);
-        tasks.clear();
-        tasks.addAll(overdueTasks);
-
-        sorterLabel.setText("Showing " + overdueTasks.size() + " overdue tasks");
-    }
-
-    // Show all tasks (reset filter)
-    @FXML
-    public void showAllTasks() {
-        loadUserTasks();
     }
 
     private Stage stage;
     private Scene scene;
     private Parent root;
-
-    public void timer(ActionEvent event) throws IOException {
-        // Load the timer page with the current user
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("timer.fxml"));
-        Parent root = loader.load();
-
-        // Pass the current user to the timer controller
-        Controller timerController = loader.getController();
-        if (currentUsername != null) {
-            timerController.setCurrentUser(currentUsername);
-        }
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/timer.css").toExternalForm());
-        stage.setTitle("Timer");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -430,24 +374,5 @@ public class TaskManager implements Initializable {
                 e.printStackTrace();
             }
         }
-    }
-
-    @FXML
-    public void aiAgent(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("aiAgent.fxml"));
-        Parent root = loader.load();
-
-        AIAgentController aiController = loader.getController();
-        if (currentUsername != null) {
-            aiController.setCurrentUser(currentUsername);
-        }
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/com/example/chronopanthers/aiAgent.css").toExternalForm());
-        stage.setTitle("AI Study Assistant");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
     }
 }
