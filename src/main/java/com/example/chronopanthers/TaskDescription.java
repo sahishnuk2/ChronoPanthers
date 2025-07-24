@@ -51,7 +51,7 @@ public class TaskDescription implements Initializable {
 
     public void addTask() {
         if (taskName.getText().isBlank()) {
-            label.setText("Empty TaskName!");
+            label.setText("Empty Task Name!");
             return;
         }
 

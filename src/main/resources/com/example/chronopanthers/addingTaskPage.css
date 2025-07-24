@@ -32,4 +32,7 @@
     -fx-text-fill: red;
 }
 
+#hider {
+    -fx-background-color: #f5f5f5;
+}
 
