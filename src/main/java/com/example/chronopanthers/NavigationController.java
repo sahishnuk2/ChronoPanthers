@@ -63,7 +63,7 @@ public class NavigationController {
 
     @FXML
     private void goToAIAgent(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("test.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AIAgent.fxml"));
         Parent root = loader.load();
 
         AIAgentController controller = loader.getController();

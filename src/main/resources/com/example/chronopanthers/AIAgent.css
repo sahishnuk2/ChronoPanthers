@@ -58,6 +58,7 @@
 /* CHAT AREA */
 .chat-container {
     -fx-background-color: #ffffff;
+    /*-fx-padding: 15px;*/
     -fx-border-color: #ddd;
     -fx-border-radius: 6px;
     -fx-padding: 12;
@@ -72,6 +73,7 @@
 /* CHAT HISTORY */
 .chat-history {
     -fx-control-inner-background: #f9f9f9;
+    /*-fx-padding: 15px;*/
     -fx-font-size: 13px;
     -fx-text-fill: #222;
     -fx-border-color: transparent;

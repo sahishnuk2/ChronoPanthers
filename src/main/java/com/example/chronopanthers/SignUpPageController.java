@@ -70,7 +70,8 @@ public class SignUpPageController implements Initializable {
                 isConnected.setText("");
                 Alert confirmation = new Alert(Alert.AlertType.INFORMATION);
                 confirmation.setTitle("Sign up successful");
-                confirmation.setContentText("Username and password accepted.\nPlease login to continue.");
+                confirmation.setHeaderText("Username and password accepted");
+                confirmation.setContentText("Proceed to log in!");
                 confirmation.showAndWait();
 
                 Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
