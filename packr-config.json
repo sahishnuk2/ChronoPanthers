@@ -1,0 +1,21 @@
+{
+  "platform": "mac",
+  "jdk": "/Users/sahishnukumaar/Downloads/jdk-21.0.8+9-jre/Contents/Home",
+  "executable": "ChronoPanthers",
+  "mainclass": "com.example.chronopanthers.ChronoPanthers",
+  "classpath": [
+    "/Users/sahishnukumaar/ChronoPanthers/target/ChronoPanthers-1.0-SNAPSHOT.jar"
+  ],
+  "vmArgs": [
+    "--module-path",
+    "/Users/sahishnukumaar/Desktop/javafx-sdk-24.0.2/lib",
+    "--add-modules",
+    "javafx.controls,javafx.fxml",
+    "-Dprism.order=sw"
+  ],
+  "minimizeJre": "soft",
+  "output": "packr-bundle",
+  "resources": [
+    "src/main/resources"
+  ]
+}

@@ -79,7 +79,7 @@ public class Productivity implements Initializable {
         // Load the charts with the correct username
         loadWeeklyChart();
 
-        System.out.println("Productivity: Username set to: " + username);
+        //System.out.println("Productivity: Username set to: " + username);
     }
 
     // Make sure this method is called after FXML injection
@@ -95,7 +95,7 @@ public class Productivity implements Initializable {
             return;
         }
 
-        System.out.println("Loading weekly charts for user: " + currentUsername);
+        //System.out.println("Loading weekly charts for user: " + currentUsername);
         updateTaskBarByWeek(currentUsername);
         updateWorkChartByWeek(currentUsername);
         updateDurationChartByWeek(currentUsername);
@@ -108,7 +108,7 @@ public class Productivity implements Initializable {
             return;
         }
 
-        System.out.println("Loading monthly charts for user: " + currentUsername);
+        //System.out.println("Loading monthly charts for user: " + currentUsername);
         updateTaskBarByMonth(currentUsername);
         updateWorkChartByMonth(currentUsername);
         updateDurationChartByMonth(currentUsername);
@@ -121,7 +121,7 @@ public class Productivity implements Initializable {
             return;
         }
 
-        System.out.println("Loading yearly charts for user: " + currentUsername);
+        //System.out.println("Loading yearly charts for user: " + currentUsername);
         updateTaskBarByYear(currentUsername);
         updateWorkChartByYear(currentUsername);
         updateDurationChartByYear(currentUsername);
@@ -362,7 +362,7 @@ public class Productivity implements Initializable {
                     // Force layout update
                     durationPieChart.layout();
 
-                    System.out.println("Updated weekly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
+                    //System.out.println("Updated weekly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
                 } catch (Exception e) {
                     System.err.println("Error updating pie chart UI: " + e.getMessage());
                 }
@@ -405,7 +405,7 @@ public class Productivity implements Initializable {
                     // Force layout update
                     durationPieChart.layout();
 
-                    System.out.println("Updated monthly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
+                    //System.out.println("Updated monthly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
                 } catch (Exception e) {
                     System.err.println("Error updating pie chart UI: " + e.getMessage());
                 }
@@ -448,7 +448,7 @@ public class Productivity implements Initializable {
                     // Force layout update
                     durationPieChart.layout();
 
-                    System.out.println("Updated yearly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
+                    //System.out.println("Updated yearly pie chart - Work: " + workDuration + ", Break: " + breakDuration);
                 } catch (Exception e) {
                     System.err.println("Error updating pie chart UI: " + e.getMessage());
                 }
