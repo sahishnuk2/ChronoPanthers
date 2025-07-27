@@ -1,5 +1,4 @@
 package com.example.chronopanthers;
-import javafx.scene.control.Alert;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
@@ -8,7 +7,7 @@ public class LoginModel {
     Connection connection;
 
     public LoginModel() {
-        connection = SQliteConnection.connector();
+        connection = SupabaseConnection.connector();
         if (connection == null) System.exit(1);
     }
 

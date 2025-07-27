@@ -1,15 +1,10 @@
 package com.example.chronopanthers;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,15 +13,13 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import static com.example.chronopanthers.SQliteConnection.*;
+import static com.example.chronopanthers.SupabaseConnection.*;
 
 public class Controller implements Initializable {
     @FXML
@@ -209,7 +202,7 @@ public class Controller implements Initializable {
 
     private void loadSessionCounts() {
         if (currentUsername != null) {
-            int[] counts = SQliteConnection.getSessionCounts(currentUsername);
+            int[] counts = SupabaseConnection.getSessionCounts(currentUsername);
             workSessions = counts[0];
             breakSessions = counts[1];
             workSessionsDisplay.setText(String.valueOf(workSessions));

@@ -159,7 +159,7 @@ public class AIService {
         messages.add(userMessageNode);
 
         requestBody.set("messages", messages);
-        requestBody.put("max_tokens", 1000);
+        requestBody.put("max_tokens", 2048);
         requestBody.put("temperature", 0.7);
 
         // Create HTTP request

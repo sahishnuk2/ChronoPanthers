@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 // Supposed to be Named SupabaseConnection, to edit when we have time
-public class SQliteConnection {
+public class SupabaseConnection {
     public static Connection connector() {
         try {
             Class.forName("org.postgresql.Driver");

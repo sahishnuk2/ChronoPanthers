@@ -2,7 +2,6 @@ package com.example.chronopanthers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -196,7 +195,7 @@ public class Productivity implements Initializable {
 
     // Work Sessions
     public void updateWorkChartByWeek(String username) {
-        Map<String, Integer> sessionsPerDay = SQliteConnection.getWorkSessionLast7Days(username);
+        Map<String, Integer> sessionsPerDay = SupabaseConnection.getWorkSessionLast7Days(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName("Last 7 Days");
 
@@ -218,7 +217,7 @@ public class Productivity implements Initializable {
     }
 
     public void updateWorkChartByMonth(String username) {
-        Map<String, Integer> sessionsPerDay = SQliteConnection.getWorkSessionLast30Days(username);
+        Map<String, Integer> sessionsPerDay = SupabaseConnection.getWorkSessionLast30Days(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName("Last 30 Days");
 
@@ -240,7 +239,7 @@ public class Productivity implements Initializable {
     }
 
     public void updateWorkChartByYear(String username) {
-        Map<String, Integer> sessionsPerMonth = SQliteConnection.getWorkSessionThisYearByMonth(username);
+        Map<String, Integer> sessionsPerMonth = SupabaseConnection.getWorkSessionThisYearByMonth(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName("This Year");
 
@@ -262,7 +261,7 @@ public class Productivity implements Initializable {
 
     // Duration
     public void updateDurationChartByWeek(String username) {
-        Map<String, Integer> sessionsPerDay = SQliteConnection.getDurationLast7Days(username);
+        Map<String, Integer> sessionsPerDay = SupabaseConnection.getDurationLast7Days(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName("Last 7 Days");
 
@@ -286,7 +285,7 @@ public class Productivity implements Initializable {
     }
 
     public void updateDurationChartByMonth(String username) {
-        Map<String, Integer> sessionsPerDay = SQliteConnection.getDurationLast30Days(username);
+        Map<String, Integer> sessionsPerDay = SupabaseConnection.getDurationLast30Days(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName("Last 30 Days");
 
@@ -309,7 +308,7 @@ public class Productivity implements Initializable {
     }
 
     public void updateDurationChartByYear(String username) {
-        Map<String, Integer> sessionsPerMonth = SQliteConnection.getDurationThisYearByMonth(username);
+        Map<String, Integer> sessionsPerMonth = SupabaseConnection.getDurationThisYearByMonth(username);
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         series.setName("This Year");
 
@@ -337,7 +336,7 @@ public class Productivity implements Initializable {
         }
 
         try {
-            Map<String, Integer> durations = SQliteConnection.getTotalDurationsByType7Days(username);
+            Map<String, Integer> durations = SupabaseConnection.getTotalDurationsByType7Days(username);
             if (durations == null) {
                 durations = new HashMap<>();
             }
@@ -380,7 +379,7 @@ public class Productivity implements Initializable {
         }
 
         try {
-            Map<String, Integer> durations = SQliteConnection.getTotalDurationsByType30Days(username);
+            Map<String, Integer> durations = SupabaseConnection.getTotalDurationsByType30Days(username);
             if (durations == null) {
                 durations = new HashMap<>();
             }
@@ -423,7 +422,7 @@ public class Productivity implements Initializable {
         }
 
         try {
-            Map<String, Integer> durations = SQliteConnection.getTotalDurationsByTypeYear(username);
+            Map<String, Integer> durations = SupabaseConnection.getTotalDurationsByTypeYear(username);
             if (durations == null) {
                 durations = new HashMap<>();
             }
