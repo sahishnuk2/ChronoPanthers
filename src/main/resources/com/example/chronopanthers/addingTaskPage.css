@@ -1,4 +1,5 @@
 @import "common.css";
+/* Button Styles */
 .button {
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;
@@ -17,6 +18,8 @@
     -fx-scale-y: 0.95;
 }
 
+/* Taskname field */
+
 #taskName {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent #3b82f6 transparent;
@@ -27,6 +30,8 @@
 #taskName:focused {
     -fx-border-width: 0 0 2 0;
 }
+
+/* Others */
 
 #label {
     -fx-text-fill: red;

@@ -7,14 +7,12 @@
 
 <HBox maxWidth="600.0" prefHeight="40.0" prefWidth="600.0" style="-fx-background-color: #4a90e2; -fx-padding: 8px;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chronopanthers.NavigationController">
     <children>
-        <!-- App Title -->
         <Label prefHeight="18.0" prefWidth="53.0" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="🍅 CP">
             <HBox.margin>
                 <Insets right="10.0" />
             </HBox.margin>
         </Label>
 
-        <!-- Navigation Buttons -->
         <HBox prefHeight="24.0" prefWidth="364.0" spacing="3.0" HBox.hgrow="ALWAYS">
             <children>
                 <Button onAction="#goToTimer" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 3px; -fx-background-radius: 3px; -fx-padding: 4 6; -fx-font-size: 11px;" text="🍅 Timer" />
@@ -24,7 +22,6 @@
             </children>
         </HBox>
 
-        <!-- User info and logout -->
         <HBox alignment="CENTER_RIGHT" spacing="5.0">
             <children>
                 <Label fx:id="usernameLabel" style="-fx-text-fill: white; -fx-font-size: 11px;" text="shawn" />

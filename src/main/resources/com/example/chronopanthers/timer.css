@@ -1,4 +1,5 @@
 @import "common.css";
+/* Buttons */
 .button.controls {
     -fx-font-size: 16px;
     -fx-min-width: 45px;
@@ -39,6 +40,7 @@
     -fx-background-radius: 8px;
 }
 
+/* Timer UI */
 #progressRing {
     -fx-stroke: #3b82f6;
     -fx-stroke-width: 15;
@@ -49,6 +51,8 @@
      -fx-stroke-width: 15;
      -fx-fill: transparent;
 }
+
+/* Settings */
 
 #settings {
     -fx-background-color: white;

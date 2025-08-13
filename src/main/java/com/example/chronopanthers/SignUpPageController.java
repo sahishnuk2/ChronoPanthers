@@ -56,6 +56,7 @@ public class SignUpPageController implements Initializable {
         }
     }
 
+    // If signup successful, go back to login page after saving user info
     public void signUp(ActionEvent event) throws IOException {
         try {
             if (txtUsername.getText().isBlank() ) {
@@ -88,6 +89,7 @@ public class SignUpPageController implements Initializable {
         }
     }
 
+    // Go back to login page
     public void back(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("loginPage.fxml"));
         stage = (Stage) ((Node)event.getSource()).getScene().getWindow();

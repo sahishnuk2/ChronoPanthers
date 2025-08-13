@@ -85,6 +85,7 @@ public class TimerManager {
         }
     }
 
+    // Add callback functions in Timer class to simulate timer changes
     public void setOnTick(Runnable callback) {
         this.onTickCallback = callback;
     }

@@ -254,6 +254,7 @@ public class TaskDatabaseManager {
         return overdueTasks;
     }
 
+    // For productivity tracking
     public static Map<String, Integer> getTasksCompletedLast7Days(String username) {
         String sql = """
             SELECT TO_CHAR(updated_at, 'YYYY-MM-DD') AS day, COUNT(*) AS task_count

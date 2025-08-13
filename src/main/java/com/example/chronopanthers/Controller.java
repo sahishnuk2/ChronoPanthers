@@ -101,6 +101,7 @@ public class Controller implements Initializable {
         updateModeUI(manager, false);
     }
 
+    // Updates Timer UI
     private void updateModeUI(TimerManager manager, boolean playSound) {
         if (manager.isWorkTime) {
             timerState.setText("Work Time");
@@ -165,14 +166,13 @@ public class Controller implements Initializable {
         loadSessionCounts();
     }
 
-    // Make sure this method is called after FXML injection
     public void initializeNavigation() {
         if (navigationBarController != null && currentUsername != null) {
             navigationBarController.setCurrentUser(currentUsername);
         }
     }
 
-    // Call this when the controller becomes active (when user navigates to timer page)
+    // Function to be called when the controller becomes active (when user navigates to timer page)
     public void onControllerActivated() {
         isControllerActive = true;
         // Force UI update to sync with current timer state
@@ -195,7 +195,7 @@ public class Controller implements Initializable {
         });
     }
 
-    // Call this when the controller becomes inactive (when user navigates away)
+    // When user navigates away from the Timer
     public void onControllerDeactivated() {
         isControllerActive = false;
     }

@@ -1,12 +1,10 @@
 @import "common.css";
+
+/* Buttons */
 .button {
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;
     -fx-padding: 5px;
-}
-
-#isConnected {
-    -fx-text-fill: red;
 }
 
 .button:hover {
@@ -21,6 +19,9 @@
     -fx-scale-y: 0.95;
 }
 
+
+/*Text field*/
+
 .text-field, .password-field {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent #3b82f6 transparent;
@@ -32,11 +33,19 @@
     -fx-border-width: 0 0 2 0;
 }
 
+#loginFields {
+    -fx-background-color: white;
+}
+
+/* Others */
+
+#isConnected {
+    -fx-text-fill: red;
+}
+
 .anchor-pane {
     -fx-background-color: lightgrey;
 }
 
-#loginFields {
-    -fx-background-color: white;
-}
+
 

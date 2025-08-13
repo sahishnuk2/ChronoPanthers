@@ -70,7 +70,7 @@ public class Productivity implements Initializable {
     public void setCurrentUsername(String username) {
         this.currentUsername = username;
 
-        // IMPORTANT: Always set the username in the navigation controller
+        // Set the username in the navigation controller
         if (navigationBarController != null) {
             navigationBarController.setCurrentUser(username);
         }
@@ -81,13 +81,13 @@ public class Productivity implements Initializable {
         //System.out.println("Productivity: Username set to: " + username);
     }
 
-    // Make sure this method is called after FXML injection
     public void initializeNavigation() {
         if (navigationBarController != null && currentUsername != null) {
             navigationBarController.setCurrentUser(currentUsername);
         }
     }
 
+    // UI rendering - weekly
     public void loadWeeklyChart() {
         if (currentUsername == null) {
             System.out.println("Warning: Cannot load weekly chart - username is null");
@@ -101,6 +101,7 @@ public class Productivity implements Initializable {
         updateSessionPieChartByWeek(currentUsername);
     }
 
+    // UI rendering - monthly
     public void loadMonthlyChart() {
         if (currentUsername == null) {
             System.out.println("Warning: Cannot load monthly chart - username is null");
@@ -114,6 +115,7 @@ public class Productivity implements Initializable {
         updateSessionPieChartByMonth(currentUsername);
     }
 
+    // UI rendering - by year
     public void loadYearlyChart() {
         if (currentUsername == null) {
             System.out.println("Warning: Cannot load yearly chart - username is null");
@@ -137,8 +139,8 @@ public class Productivity implements Initializable {
         List<String> days = new ArrayList<>();
         for (int i = 6; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            String dbKey = date.toString();  // e.g., "2025-07-15"
-            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Mon", etc.
+            String dbKey = date.toString();  //"2025-07-15"
+            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // Mon
             days.add(dayOfWeek);
 
             int count = sessionsPerDay.getOrDefault(dbKey, 0); // use 0 if not found
@@ -159,7 +161,7 @@ public class Productivity implements Initializable {
         List<String> days = new ArrayList<>();
         for (int i = 29; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            String dbKey = date.toString();  // e.g., "2025-07-15"
+            String dbKey = date.toString();  // "2025-07-15"
             String day = date.getDayOfMonth() + "/" + date.getMonthValue();
             days.add(day);
 
@@ -179,15 +181,15 @@ public class Productivity implements Initializable {
 
         List<String> months = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
-            String monthStr = String.format("%d-%02d", Year.now().getValue(), month);  // e.g., "2025-07"
-            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // e.g., "Jul"
+            String monthStr = String.format("%d-%02d", Year.now().getValue(), month); // "2025-07"
+            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Jul"
             months.add(label);
 
             int count = sessionsPerMonth.getOrDefault(monthStr, 0);
             series.getData().add(new XYChart.Data<>(label, count));
         }
 
-        taskChart.getData().clear(); // Fix: was updating wrong chart
+        taskChart.getData().clear();
         taskChart.getData().add(series);
 
         resetTaskAxis("Months", months, 90);
@@ -203,8 +205,8 @@ public class Productivity implements Initializable {
         List<String> dayLabels = new ArrayList<>();
         for (int i = 6; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            String dbKey = date.toString();  // e.g., "2025-07-15"
-            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Mon", etc.
+            String dbKey = date.toString(); // "2025-07-15"
+            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Mon"
             dayLabels.add(dayOfWeek);
 
             int count = sessionsPerDay.getOrDefault(dbKey, 0); // use 0 if not found
@@ -225,7 +227,7 @@ public class Productivity implements Initializable {
         List<String> days = new ArrayList<>();
         for (int i = 29; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            String dbKey = date.toString();  // e.g., "2025-07-15"
+            String dbKey = date.toString();  // "2025-07-15"
             String day = date.getDayOfMonth() + "/" + date.getMonthValue();
             days.add(day);
 
@@ -245,8 +247,8 @@ public class Productivity implements Initializable {
 
         List<String> months = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
-            String monthStr = String.format("%d-%02d", Year.now().getValue(), month);  // e.g., "2025-07"
-            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // e.g., "Jul"
+            String monthStr = String.format("%d-%02d", Year.now().getValue(), month);  // "2025-07"
+            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Jul"
             months.add(label);
 
             int count = sessionsPerMonth.getOrDefault(monthStr, 0);
@@ -270,8 +272,8 @@ public class Productivity implements Initializable {
 
         for (int i = 6; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            String dbKey = date.toString();  // e.g., "2025-07-15"
-            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Mon", etc.
+            String dbKey = date.toString();  // "2025-07-15"
+            String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Mon"
             dayLabels.add(dayOfWeek);
 
             int count = sessionsPerDay.getOrDefault(dbKey, 0); // use 0 if not found
@@ -293,7 +295,7 @@ public class Productivity implements Initializable {
         List<String> days = new ArrayList<>();
         for (int i = 29; i >= 0; i--) {
             LocalDate date = today.minusDays(i);
-            String dbKey = date.toString();  // e.g., "2025-07-15"
+            String dbKey = date.toString();  // "2025-07-15"
             String day = date.getDayOfMonth() + "/" + date.getMonthValue();
             days.add(day);
 
@@ -314,8 +316,8 @@ public class Productivity implements Initializable {
 
         List<String> months = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
-            String monthStr = String.format("%d-%02d", Year.now().getValue(), month);  // e.g., "2025-07"
-            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // e.g., "Jul"
+            String monthStr = String.format("%d-%02d", Year.now().getValue(), month);  // "2025-07"
+            String label = Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault()); // "Jul"
             months.add(label);
 
             int count = sessionsPerMonth.getOrDefault(monthStr, 0);
@@ -482,7 +484,6 @@ public class Productivity implements Initializable {
         taskChart.layout(); // force redraw
     }
 
-    // Keep only these navigation methods for backward compatibility
     private Stage stage;
 
     public void setStage(Stage stage) {

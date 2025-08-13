@@ -53,7 +53,6 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <!-- Tasks Chart -->
                         <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <children>
                                 <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="✅ Tasks Completed" />
@@ -68,7 +67,6 @@
                             </children>
                         </VBox>
 
-                        <!-- Work Sessions Chart -->
                         <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <children>
                                 <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="🍅 Work Sessions" />
@@ -83,7 +81,6 @@
                             </children>
                         </VBox>
 
-                        <!-- Duration Chart -->
                         <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <children>
                                 <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="⏱️ Study Duration" />
@@ -98,7 +95,6 @@
                             </children>
                         </VBox>
 
-                        <!-- Pie Chart -->
                         <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <children>
                                 <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="⚖️ Work vs Break Balance" />

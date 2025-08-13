@@ -49,6 +49,7 @@ public class TaskDescription implements Initializable {
         this.user = user;
     }
 
+    // Adds a new task or edits a task (delete and insert task)
     public void addTask() {
         if (taskName.getText().isBlank()) {
             label.setText("Empty Task Name!");
@@ -70,6 +71,7 @@ public class TaskDescription implements Initializable {
             return;
         }
 
+        // Check for duplicate task
         if (!isEditing && TaskDatabaseManager.taskExists(user, taskname)) {
             label.setText("Task with this name already exists!");
             return;

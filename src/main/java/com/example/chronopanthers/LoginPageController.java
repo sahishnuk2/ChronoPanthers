@@ -55,7 +55,7 @@ public class LoginPageController implements Initializable {
             isConnected.setText("Not Connected to DB");
         }
     }
-
+    // Go to Timer if valid credentials
     public void login(ActionEvent event) throws IOException {
         try {
             if (txtUsername.getText().isBlank()) {
@@ -86,6 +86,7 @@ public class LoginPageController implements Initializable {
         }
     }
 
+    // Go to sign up page
     public void signup(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("SignUpPage.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
