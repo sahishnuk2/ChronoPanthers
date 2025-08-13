@@ -20,6 +20,8 @@ public class ChronoPanthers extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+
+        // Test
     }
 
     public static void main(String[] args) {
